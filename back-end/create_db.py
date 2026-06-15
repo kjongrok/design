@@ -10,10 +10,10 @@ def create_db():
             port=Config.DB_PORT
         )
         cursor = c.cursor()
-        cursor.execute('CREATE DATABASE IF NOT EXISTS bidmatch DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci')
+        cursor.execute(f'CREATE DATABASE IF NOT EXISTS {Config.DB_NAME} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci')
         c.commit()
         c.close()
-        print("Database bidmatch created successfully.")
+        print(f"Database {Config.DB_NAME} created successfully.")
     except Exception as e:
         print("Error creating DB:", e)
 

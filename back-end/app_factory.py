@@ -23,6 +23,8 @@ def create_app():
     CORS(app, resources={r"/api/*": {"origins": origins}})
 
     if app.config["DB_AUTO_SYNC_SCHEMA"]:
+        from create_db import create_db
+        create_db()
         sync_database_schema()
 
     register_blueprints(app)
