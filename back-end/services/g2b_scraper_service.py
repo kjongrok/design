@@ -124,7 +124,7 @@ class G2BScraperService:
                     
                     # Parse dates if present
                     reg_date_str = item.get('bidNtceDt') # "2024-05-28 10:00:00"
-                    deadline_str = item.get('bidEndDt')
+                    deadline_str = item.get('bidClseDt') or item.get('bidEndDt')
                     
                     estimated_price = item.get('presmptPrce') or item.get('bidLmtAmt') or 0
                     
