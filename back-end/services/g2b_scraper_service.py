@@ -11,7 +11,7 @@ load_dotenv()
 class G2BScraperService:
     def __init__(self):
         self.api_key = os.environ.get("G2B_API_KEY")
-        self.base_url = os.environ.get("G2B_API_BASE_URL")
+        self.base_url = os.environ.get("G2B_API_BASE_URL", "http://apis.data.go.kr/1230000/ad/BidPublicInfoService")
         self.endpoints = os.environ.get("G2B_COLLECT_ENDPOINTS", "getBidPblancListInfoServc").split(',')
 
     def fetch_and_store_notices(self, hours_back=2):
