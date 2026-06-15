@@ -8,6 +8,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('home');
   const [companies, setCompanies] = useState([]);
+  const [users, setUsers] = useState([]);
   
   const [stats, setStats] = useState({
     total_users: 0,
@@ -44,6 +45,14 @@ function AdminDashboard() {
     }).catch(err => console.error(err));
   };
 
+  const fetchUsers = () => {
+    api.get('/admin/users').then(res => {
+      if (res.data.success) {
+        setUsers(res.data.users);
+      }
+    }).catch(err => console.error(err));
+  };
+
   useEffect(() => {
     fetchStats();
     fetchLogs();
@@ -52,6 +61,8 @@ function AdminDashboard() {
   useEffect(() => {
     if (activeTab === 'companies') {
       fetchCompanies();
+    } else if (activeTab === 'users') {
+      fetchUsers();
     }
   }, [activeTab]);
 
@@ -107,6 +118,46 @@ function AdminDashboard() {
       });
   };
 
+  const handleUpdateUserRole = (userId, newRole) => {
+    if (!window.confirm(`권한을 ${newRole}로 변경하시겠습니까?`)) return;
+    api.put(`/admin/users/${userId}/role`, { role: newRole })
+      .then(res => {
+        if (res.data.success) {
+          alert(res.data.message);
+          fetchUsers();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(err => console.error(err));
+  };
+
+  const handleUpdateUserStatus = (userId, newStatus) => {
+    if (!window.confirm(`상태를 ${newStatus === 'blocked' ? '정지' : '활성'} 처리하시겠습니까?`)) return;
+    api.put(`/admin/users/${userId}/status`, { status: newStatus })
+      .then(res => {
+        if (res.data.success) {
+          alert(res.data.message);
+          fetchUsers();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(err => console.error(err));
+  };
+
+  const handleDeleteRegularUser = (userId) => {
+    if (!window.confirm("정말 회원을 영구 삭제하시겠습니까? 관련 데이터가 모두 삭제됩니다.")) return;
+    api.delete(`/admin/users/${userId}`)
+      .then(res => {
+        if (res.data.success) {
+          alert(res.data.message);
+          fetchUsers();
+          fetchStats();
+        } else {
+          alert(res.data.message);
+        }
+      }).catch(err => console.error(err));
+  };
+
   return (
     <Layout>
       <div className="dashboard-container">
@@ -133,6 +184,12 @@ function AdminDashboard() {
             style={{ padding: '12px 16px', fontWeight: 600, color: activeTab === 'companies' ? '#0f172a' : '#64748b', borderBottom: activeTab === 'companies' ? '2px solid #0f172a' : '2px solid transparent', backgroundColor: 'transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer', fontSize: '15px' }}
           >
             기업 증빙 관리
+          </button>
+          <button 
+            onClick={() => setActiveTab('users')}
+            style={{ padding: '12px 16px', fontWeight: 600, color: activeTab === 'users' ? '#0f172a' : '#64748b', borderBottom: activeTab === 'users' ? '2px solid #0f172a' : '2px solid transparent', backgroundColor: 'transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer', fontSize: '15px' }}
+          >
+            회원 관리
           </button>
         </div>
 
@@ -283,20 +340,7 @@ function AdminDashboard() {
                     </div>
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '14px', fontWeight: 600 }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f97316' }}></div>
-                        Worker Node #04
-                      </div>
-                      <span style={{ fontSize: '12px', fontWeight: 700, color: '#f97316' }}>HIGH LOAD</span>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="panel">
+                         <div className="panel">
              <div className="panel-header">
                <div className="panel-title">기업 증빙 서류 관리</div>
                <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>사용자가 제출한 사업자 증빙 서류를 확인하고 승인/반려를 처리합니다.</p>
@@ -359,7 +403,88 @@ function AdminDashboard() {
                  </tbody>
                </table>
              </div>
-           </div>
+            </div>
+        ) : activeTab === 'users' ? (
+            <div className="panel">
+              <div className="panel-header">
+                <div className="panel-title">전체 회원 관리</div>
+                <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>가입된 모든 회원의 목록을 조회하고 권한 및 상태를 관리합니다.</p>
+              </div>
+              <div style={{ padding: '24px', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b', fontSize: '13px' }}>
+                      <th style={{ padding: '12px 16px' }}>가입일</th>
+                      <th style={{ padding: '12px 16px' }}>가입 유형</th>
+                      <th style={{ padding: '12px 16px' }}>회원 정보</th>
+                      <th style={{ padding: '12px 16px' }}>권한</th>
+                      <th style={{ padding: '12px 16px' }}>상태</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right' }}>관리 작업</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map(u => (
+                      <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9', fontSize: '14px' }}>
+                        <td style={{ padding: '16px', color: '#64748b', fontSize: '13px' }}>
+                          {u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', backgroundColor: '#f1f5f9', color: '#475569', fontWeight: 600 }}>
+                            {u.auth_provider ? u.auth_provider.toUpperCase() : 'EMAIL'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          <div style={{ fontWeight: 600 }}>{u.name}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>{u.email}</div>
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', backgroundColor: u.role === 'ADMIN' ? '#fef08a' : u.role === 'COMPANY' ? '#dcfce7' : '#f1f5f9', color: u.role === 'ADMIN' ? '#854d0e' : u.role === 'COMPANY' ? '#166534' : '#475569', fontWeight: 600 }}>
+                            {u.role}
+                          </span>
+                        </td>
+                        <td style={{ padding: '16px' }}>
+                          <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', backgroundColor: u.status === 'active' ? '#dcfce7' : '#fee2e2', color: u.status === 'active' ? '#166534' : '#991b1b', fontWeight: 600 }}>
+                            {u.status.toUpperCase()}
+                          </span>
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'right' }}>
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            {u.role === 'ADMIN' ? (
+                              <button onClick={() => handleUpdateUserRole(u.id, 'USER')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                                관리자 해임
+                              </button>
+                            ) : (
+                              <button onClick={() => handleUpdateUserRole(u.id, 'ADMIN')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #eab308', color: '#ca8a04', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                                관리자 임명
+                              </button>
+                            )}
+                            
+                            {u.status === 'active' ? (
+                              <button onClick={() => handleUpdateUserStatus(u.id, 'blocked')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #fca5a5', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                                정지
+                              </button>
+                            ) : (
+                              <button onClick={() => handleUpdateUserStatus(u.id, 'active')} style={{ padding: '6px 12px', backgroundColor: '#22c55e', border: 'none', color: '#fff', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                                활성
+                              </button>
+                            )}
+
+                            <button onClick={() => handleDeleteRegularUser(u.id)} style={{ padding: '6px', backgroundColor: '#fff', border: 'none', color: '#94a3b8', borderRadius: '6px', cursor: 'pointer' }} title="삭제">
+                              <X size={18} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {users.length === 0 && (
+                      <tr>
+                        <td colSpan="6" style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>가입된 회원이 없습니다.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
         )}
 
       </div>

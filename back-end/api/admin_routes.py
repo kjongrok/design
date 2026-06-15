@@ -150,3 +150,74 @@ def get_logs():
         return jsonify({"success": False, "message": str(e)}), 500
     finally:
         conn.close()
+
+@admin_bp.get('/users')
+@require_admin
+def get_users():
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, email, name, role, status, auth_provider, created_at
+                FROM users
+                ORDER BY created_at DESC
+            """)
+            users = cursor.fetchall()
+            return jsonify({"success": True, "users": users}), 200
+    except Exception as e:
+        print("Admin get users error:", e)
+        return jsonify({"success": False, "message": "회원 목록 조회에 실패했습니다."}), 500
+    finally:
+        conn.close()
+
+@admin_bp.put('/users/<int:user_id>/role')
+@require_admin
+def update_user_role(user_id):
+    data = request.get_json()
+    new_role = data.get('role')
+    if new_role not in ['USER', 'ADMIN']:
+        return jsonify({"success": False, "message": "유효하지 않은 권한입니다."}), 400
+        
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("UPDATE users SET role = %s WHERE id = %s", (new_role, user_id))
+        conn.commit()
+        return jsonify({"success": True, "message": "권한이 변경되었습니다."}), 200
+    except Exception as e:
+        conn.rollback()
+        print("Admin update role error:", e)
+        return jsonify({"success": False, "message": "권한 변경에 실패했습니다."}), 500
+    finally:
+        conn.close()
+
+@admin_bp.put('/users/<int:user_id>/status')
+@require_admin
+def update_user_status(user_id):
+    data = request.get_json()
+    new_status = data.get('status')
+    if new_status not in ['active', 'blocked']:
+        return jsonify({"success": False, "message": "유효하지 않은 상태입니다."}), 400
+        
+    conn = get_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("UPDATE users SET status = %s WHERE id = %s", (new_status, user_id))
+        conn.commit()
+        return jsonify({"success": True, "message": "상태가 변경되었습니다."}), 200
+    except Exception as e:
+        conn.rollback()
+        print("Admin update status error:", e)
+        return jsonify({"success": False, "message": "상태 변경에 실패했습니다."}), 500
+    finally:
+        conn.close()
+
+@admin_bp.delete('/users/<int:user_id>')
+@require_admin
+def delete_user(user_id):
+    try:
+        user_repo.delete_user(user_id)
+        return jsonify({"success": True, "message": "회원이 삭제되었습니다."}), 200
+    except Exception as e:
+        print("Admin delete user error:", e)
+        return jsonify({"success": False, "message": "회원 삭제에 실패했습니다."}), 500
