@@ -173,6 +173,9 @@ def get_users():
 @admin_bp.put('/users/<int:user_id>/role')
 @require_admin
 def update_user_role(user_id):
+    if user_id == request.user['sub']:
+        return jsonify({"success": False, "message": "자기 자신의 권한은 변경할 수 없습니다."}), 400
+
     data = request.get_json()
     new_role = data.get('role')
     if new_role not in ['USER', 'ADMIN']:
@@ -194,6 +197,9 @@ def update_user_role(user_id):
 @admin_bp.put('/users/<int:user_id>/status')
 @require_admin
 def update_user_status(user_id):
+    if user_id == request.user['sub']:
+        return jsonify({"success": False, "message": "자기 자신의 상태는 변경할 수 없습니다."}), 400
+
     data = request.get_json()
     new_status = data.get('status')
     if new_status not in ['active', 'blocked']:
@@ -215,6 +221,9 @@ def update_user_status(user_id):
 @admin_bp.delete('/users/<int:user_id>')
 @require_admin
 def delete_user(user_id):
+    if user_id == request.user['sub']:
+        return jsonify({"success": False, "message": "자기 자신은 삭제할 수 없습니다."}), 400
+
     try:
         user_repo.delete_user(user_id)
         return jsonify({"success": True, "message": "회원이 삭제되었습니다."}), 200

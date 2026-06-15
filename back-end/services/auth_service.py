@@ -34,9 +34,11 @@ class AuthService:
         if not user:
             return {"success": False, "message": "사용자를 찾을 수 없습니다."}, 401
 
-        # Check password
         if not user.get('password_hash') or not check_password_hash(user['password_hash'], password):
             return {"success": False, "message": "이메일 또는 비밀번호가 올바르지 않습니다."}, 401
+
+        if user.get('status') == 'blocked':
+            return {"success": False, "message": "정지된 계정입니다. 관리자에게 문의하세요."}, 403
 
         # Update last login
         self.repository.update_last_login(user['id'])

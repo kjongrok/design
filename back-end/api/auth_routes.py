@@ -174,6 +174,9 @@ def oauth_callback(provider):
                     user = cursor.fetchone()
             
             conn.commit()
+
+            if user.get('status') == 'blocked':
+                return jsonify({"success": False, "message": "정지된 계정입니다. 관리자에게 문의하세요."}), 403
             
             # 4. JWT 토큰 발급
             token = encode_jwt(user['id'], user['email'], user['role'])
