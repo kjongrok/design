@@ -44,6 +44,19 @@ def login():
     result, status_code = auth_service.login(email, password)
     return jsonify(result), status_code
 
+@auth_bp.post('/reset-password-request')
+def reset_password_request():
+    data = request.get_json()
+    if not data:
+        return jsonify({"success": False, "message": "잘못된 요청 데이터입니다."}), 400
+
+    email = data.get('email')
+    if not email:
+        return jsonify({"success": False, "message": "이메일은 필수 항목입니다."}), 400
+
+    result, status_code = auth_service.reset_password_request(email)
+    return jsonify(result), status_code
+
 @auth_bp.get('/me')
 @require_auth
 def get_me():

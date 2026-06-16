@@ -145,7 +145,7 @@ function Login() {
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#475569', cursor: 'pointer' }}>
                 <input type="checkbox" style={{ width: '16px', height: '16px' }} /> 로그인 상태 유지
               </label>
-              <a href="#" style={{ fontSize: '14px', color: '#3b82f6', fontWeight: 600, textDecoration: 'none' }}>비밀번호 재설정</a>
+              <button type="button" onClick={() => navigate('/reset-password')} style={{ background: 'none', border: 'none', fontSize: '14px', color: '#3b82f6', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', padding: 0 }}>비밀번호 재설정</button>
             </div>
             
             <button 

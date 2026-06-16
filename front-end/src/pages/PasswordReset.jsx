@@ -1,9 +1,39 @@
-import React from 'react';
-import { Mail, ShieldCheck, ArrowRight, ChevronLeft } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, ShieldCheck, ArrowRight, ChevronLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 
 function PasswordReset() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+    setError(null);
+    
+    try {
+      const res = await api.post('/auth/reset-password-request', { email });
+      if (res.data.success) {
+        setMessage('입력하신 이메일로 임시 비밀번호가 발송되었습니다.');
+        setEmail('');
+      } else {
+        setError(res.data.message || '요청 처리 중 문제가 발생했습니다.');
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('서버와 통신할 수 없습니다.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f8fafc', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
@@ -23,17 +53,20 @@ function PasswordReset() {
           가입하신 이메일 주소를 입력하시면 비밀번호를 재설정할 수 있는 링크를 보내드립니다.
         </p>
 
-        <form onSubmit={(e) => { e.preventDefault(); alert('링크가 발송되었습니다.'); }}>
+        <form onSubmit={handleSubmit}>
+          {message && <div style={{ backgroundColor: '#ecfdf5', color: '#059669', padding: '12px', borderRadius: '8px', marginBottom: '24px', fontSize: '14px', fontWeight: 500 }}>{message}</div>}
+          {error && <div style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '12px', borderRadius: '8px', marginBottom: '24px', fontSize: '14px', fontWeight: 500 }}>{error}</div>}
+
           <div style={{ marginBottom: '24px' }}>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이메일 주소</label>
             <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
               <Mail size={20} color="#94a3b8" style={{ marginRight: '12px' }} />
-              <input type="email" placeholder="example@domain.com" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '15px' }} />
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@domain.com" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '15px' }} />
             </div>
           </div>
 
-          <button type="submit" style={{ width: '100%', height: '48px', backgroundColor: '#0f172a', color: '#fff', borderRadius: '8px', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
-            재설정 링크 발송 <ArrowRight size={18} />
+          <button type="submit" disabled={loading} style={{ width: '100%', height: '48px', backgroundColor: '#0f172a', color: '#fff', borderRadius: '8px', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+            {loading ? <Loader2 size={18} className="animate-spin" /> : <>재설정 링크 발송 <ArrowRight size={18} /></>}
           </button>
         </form>
 

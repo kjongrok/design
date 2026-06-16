@@ -105,4 +105,62 @@ class EmailService:
             print(f"[EmailService] 이메일 발송 실패: {e}")
             return False
 
+    def send_temp_password(self, to_email, user_name, temp_password):
+        if not self.user or not self.password:
+            print("[EmailService] SMTP 설정이 없어 이메일을 발송할 수 없습니다.")
+            return False
+
+        html_content = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: 'Malgun Gothic', sans-serif; background-color: #f8fafc; padding: 20px; }}
+                .container {{ max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }}
+                .header {{ border-bottom: 2px solid #3b82f6; padding-bottom: 20px; margin-bottom: 20px; }}
+                .title {{ font-size: 20px; font-weight: bold; color: #0f172a; }}
+                .pw-box {{ background-color: #f1f5f9; border: 1px dashed #cbd5e1; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #0f172a; margin: 30px 0; border-radius: 8px; }}
+                .footer {{ margin-top: 30px; text-align: center; color: #64748b; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="title">🔒 BidMatch 비밀번호 재설정 안내</div>
+                </div>
+                <p>안녕하세요, <strong>{user_name}</strong>님!</p>
+                <p>요청하신 비밀번호 재설정에 따라 아래와 같이 임시 비밀번호가 발급되었습니다.</p>
+                <p>로그인 후 반드시 비밀번호를 변경해 주시기 바랍니다.</p>
+                
+                <div class="pw-box">{temp_password}</div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="http://localhost:5173/login" style="background-color: #0f172a; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">로그인하러 가기</a>
+                </div>
+                <div class="footer">
+                    본 메일은 발신전용 메일입니다. <br/>
+                    © 2026 BidMatch. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "[BidMatch] 임시 비밀번호 발급 안내"
+        msg['From'] = f"BidMatch <{self.user}>"
+        msg['To'] = to_email
+
+        msg.attach(MIMEText(html_content, 'html'))
+
+        try:
+            with smtplib.SMTP(self.server, self.port) as server:
+                server.starttls()
+                server.login(self.user, self.password)
+                server.send_message(msg)
+            print(f"[EmailService] {to_email} 로 임시 비밀번호 발송 성공!")
+            return True
+        except Exception as e:
+            print(f"[EmailService] 임시 비밀번호 발송 실패: {e}")
+            return False
+
 email_service = EmailService()

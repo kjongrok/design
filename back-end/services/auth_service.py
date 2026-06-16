@@ -130,6 +130,41 @@ class AuthService:
             print(f"Update password error: {e}")
             return {"success": False, "message": "비밀번호 변경에 실패했습니다."}, 500
 
+    def reset_password_request(self, email):
+        import string
+        import random
+        from services.email_service import email_service
+        
+        user = self.repository.find_by_email(email)
+        if not user:
+            # 보안을 위해 존재하지 않는 이메일이라도 구체적인 에러 대신 성공 메시지와 동일한 모호한 응답을 주는 것이 권장되지만, 
+            # 사용자 경험을 위해 가입되지 않은 이메일임을 안내
+            return {"success": False, "message": "가입되지 않은 이메일입니다."}, 404
+
+        # 소셜 로그인 가입자인 경우 비밀번호 재설정 불가 안내
+        if user.get('auth_provider') and user.get('auth_provider') != 'local':
+            return {"success": False, "message": "소셜 로그인(구글/카카오)으로 가입된 계정은 비밀번호 재설정을 지원하지 않습니다."}, 400
+
+        # 임시 비밀번호 생성 (8자리 랜덤 영문/숫자)
+        characters = string.ascii_letters + string.digits
+        temp_password = ''.join(random.choice(characters) for i in range(8))
+        
+        # 비밀번호 해싱 및 DB 업데이트
+        new_hash = generate_password_hash(temp_password)
+        try:
+            self.repository.update_password(user['id'], new_hash)
+            
+            # 이메일 발송
+            sent = email_service.send_temp_password(email, user['name'], temp_password)
+            if sent:
+                return {"success": True, "message": "임시 비밀번호가 이메일로 발송되었습니다."}, 200
+            else:
+                # 이메일 발송 실패 시 (개발 환경 등)
+                return {"success": False, "message": "이메일 발송에 실패했습니다. 관리자에게 문의하세요."}, 500
+        except Exception as e:
+            print(f"Reset password error: {e}")
+            return {"success": False, "message": "비밀번호 재설정 처리 중 오류가 발생했습니다."}, 500
+
     def verify_business_number(self, user_id, biz_no):
         if not biz_no:
             return {"success": False, "message": "사업자등록번호가 필요합니다."}, 400
