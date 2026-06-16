@@ -5,9 +5,9 @@
   --color-sidebar-text: #94a3b8;
   --color-sidebar-text-active: #111827;
   
-  --color-bg: #f8fafc;
+  --color-bg: #f1f5f9; /* 배경을 약간 어둡게 하여 흰색 카드가 돋보이게 함 */
   --color-card-bg: #ffffff;
-  --color-border: #e2e8f0;
+  --color-border: #cbd5e1; /* 경계선을 조금 더 진하게 변경 */
   
   --color-text-main: #0f172a;
   --color-text-sub: #64748b;
@@ -16,6 +16,10 @@
   --color-warning: #f97316;
   --color-info: #3b82f6;
   --color-success: #22c55e;
+
+  /* Shadows for Box effect */
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --box-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 
   /* Typography */
   --font-family: 'Hanken Grotesk', -apple-system, sans-serif;
@@ -116,6 +120,7 @@ button {
   height: 80px;
   background-color: var(--color-card-bg);
   border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -227,6 +232,13 @@ button {
   display: flex;
   flex-direction: column;
   position: relative;
+  box-shadow: var(--box-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .metric-icon {
@@ -286,6 +298,7 @@ button {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: var(--box-shadow);
 }
 
 .panel-header {
@@ -358,14 +371,25 @@ tr:last-child td {
 .noti-list {
   display: flex;
   flex-direction: column;
+  padding: 16px 24px;
+  gap: 12px;
 }
 
 .noti-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--color-border);
+  padding: 16px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-card-bg);
+  box-shadow: var(--box-shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.noti-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
 .noti-item-left {
@@ -484,6 +508,17 @@ tr:last-child td {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--color-bg);
+  box-shadow: var(--box-shadow-sm);
+  transition: transform 0.2s;
+}
+.event-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
+  background-color: var(--color-card-bg);
 }
 
 .event-date {
