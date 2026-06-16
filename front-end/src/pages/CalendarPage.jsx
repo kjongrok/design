@@ -182,7 +182,7 @@ function CalendarPage() {
         )}
 
         <div className="panel" style={{ padding: '0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--color-border)', backgroundColor: '#f8fafc' }}>
             {['일','월','화','수','목','금','토'].map((d, i) => (
               <div key={d} style={{ padding: '12px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: i === 0 ? '#ef4444' : i === 6 ? '#3b82f6' : '#64748b' }}>
                 {d}
@@ -190,7 +190,7 @@ function CalendarPage() {
             ))}
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', flex: 1, gridAutoRows: 'minmax(110px, 1fr)', backgroundColor: '#e2e8f0', gap: '1px', minHeight: 0 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', flex: 1, gridAutoRows: 'minmax(110px, 1fr)', backgroundColor: 'var(--color-border)', gap: '1px', minHeight: 0 }}>
             
             {/* Previous month padding */}
             {[...Array(firstDayOfMonth)].map((_, i) => {
@@ -219,7 +219,7 @@ function CalendarPage() {
                   key={day} 
                   onClick={() => noticesOnThisDay.length > 0 && (setSelectedDateObj(new Date(year, month, day)), setSelectedDateNotices(noticesOnThisDay))}
                   style={{ 
-                    backgroundColor: isToday ? '#f0f9ff' : '#fff', 
+                    backgroundColor: isToday ? '#f0f9ff' : 'var(--color-card-bg)', 
                     padding: '8px', 
                     display: 'flex', 
                     flexDirection: 'column', 
