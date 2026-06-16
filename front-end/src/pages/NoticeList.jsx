@@ -74,7 +74,7 @@ function NoticeList() {
             num: item.bid_notice_no ? `제 ${item.bid_notice_no}-${item.bid_notice_ord}호` : item.notice_no,
             org: item.notice_org_name || item.demand_org_name || "알 수 없음",
             budget: item.estimated_price ? parseInt(item.estimated_price).toLocaleString() : '미정',
-            posted: item.posted_at ? formatDateTime(item.posted_at) : '미정',
+            posted: item.posted_at ? formatDateTime(item.posted_at) : (item.registered_at ? formatDateTime(item.registered_at) : (item.last_synced_at ? formatDateTime(item.last_synced_at) : '미정')),
             date: item.deadline_at ? formatDateTime(item.deadline_at) : '미정',
             dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(typeof item.deadline_at === 'string' ? item.deadline_at.replace(/-/g, '/') : item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
             highlightDate: false,

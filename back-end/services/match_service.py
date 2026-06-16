@@ -113,7 +113,7 @@ def get_matched_notices_for_user(user_id):
             sql = """
                 SELECT 
                     n.id, n.title, n.notice_org_name, n.demand_org_name, 
-                    n.deadline_at, n.estimated_price, n.status, n.bid_notice_no, n.bid_notice_ord, n.notice_no,
+                    n.posted_at, n.deadline_at, n.estimated_price, n.status, n.bid_notice_no, n.bid_notice_ord, n.notice_no,
                     n.region, n.region_name, n.biz_type,
                     mr.match_score, mr.matched_keywords
                 FROM match_results mr

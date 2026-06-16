@@ -207,7 +207,7 @@ function NoticeDetail() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '14px' }}>
                     <Calendar size={16} /> 게시 일시
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '14px' }}>{notice.posted_at || '미정'}</div>
+                  <div style={{ fontWeight: 700, fontSize: '14px' }}>{notice.posted_at || notice.registered_at || notice.last_synced_at || '미정'}</div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontSize: '14px' }}>
