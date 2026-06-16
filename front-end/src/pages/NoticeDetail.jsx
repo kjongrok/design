@@ -81,7 +81,7 @@ function NoticeDetail() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {/* Title Card */}
-            <div className="card" style={{ padding: '32px' }}>
+            <div className="panel" style={{ padding: '32px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <Badge variant={notice.status === 'OPEN' ? 'info' : 'warning'} style={{ backgroundColor: '#e0f2fe', color: '#0284c7' }}>
                   {notice.status === 'OPEN' ? '진행중' : '마감'}
@@ -117,7 +117,7 @@ function NoticeDetail() {
             </div>
 
             {/* Summary Card */}
-            <div className="card" style={{ padding: '32px' }}>
+            <div className="panel" style={{ padding: '32px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
                 <FileText size={20} color="#0f172a" />
                 <h2 style={{ fontSize: '18px', fontWeight: 700 }}>공고 요약 및 주요 키워드</h2>
@@ -161,7 +161,7 @@ function NoticeDetail() {
             </div>
 
             {/* Detail Table */}
-            <div className="card" style={{ padding: '0' }}>
+            <div className="panel" style={{ padding: '0' }}>
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
                 <h2 style={{ fontSize: '15px', fontWeight: 700 }}>상세 공고 명세</h2>
               </div>
@@ -194,7 +194,7 @@ function NoticeDetail() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {/* Budget & Date Card */}
-            <div className="card" style={{ padding: '32px' }}>
+            <div className="panel" style={{ padding: '32px' }}>
               <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                 <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>배정 예산</div>
                 <div style={{ fontSize: '32px', fontWeight: 800, color: '#0f172a' }}>
@@ -232,7 +232,7 @@ function NoticeDetail() {
             </div>
 
             {/* Match Analysis Card */}
-            <div className="card" style={{ padding: '32px' }}>
+            <div className="panel" style={{ padding: '32px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                 <TrendingUp size={18} color="#0f172a" />
                 <h2 style={{ fontSize: '16px', fontWeight: 700 }}>우리 기업 매칭 분석</h2>

@@ -328,7 +328,7 @@ function AdminDashboard() {
                 </div>
 
                 {/* Service Status Card */}
-                <div className="card" style={{ padding: '32px' }}>
+                <div className="panel" style={{ padding: '32px' }}>
                   <h2 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '24px' }}>서비스 연결 상태</h2>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

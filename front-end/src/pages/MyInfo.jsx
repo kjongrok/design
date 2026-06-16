@@ -227,7 +227,7 @@ function MyInfo() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {activeTab === 'personal' && (
-              <div className="card" style={{ padding: 0 }}>
+              <div className="panel" style={{ padding: 0 }}>
                 <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
                   <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>개인 정보 설정</h2>
                   <p style={{ fontSize: '13px', color: '#64748b' }}>시스템 알림 및 공고 관리 권한을 위한 개인 정보를 수정할 수 있습니다.</p>
@@ -264,7 +264,7 @@ function MyInfo() {
             )}
 
             {activeTab === 'company' && (
-              <div className="card" style={{ padding: 0, backgroundColor: '#f8fafc' }}>
+              <div className="panel" style={{ padding: 0, backgroundColor: '#f8fafc' }}>
                 <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0' }}>
                   <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>기업 정보 및 인증</h2>
                   <p style={{ fontSize: '13px', color: '#64748b' }}>나라장터 입찰 시 가점 및 제한 사항에 영향을 주는 기업 상세 정보입니다.</p>
@@ -375,7 +375,7 @@ function MyInfo() {
             )}
 
             {activeTab === 'security' && (
-              <div className="card" style={{ padding: 0 }}>
+              <div className="panel" style={{ padding: 0 }}>
                 <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
                   <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>보안 및 비밀번호</h2>
                   <p style={{ fontSize: '13px', color: '#64748b' }}>계정을 안전하게 보호하기 위해 비밀번호를 주기적으로 변경해주세요.</p>

@@ -103,7 +103,7 @@ function InterestConditions() {
           
           {/* Left Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="card" style={{ padding: 0 }}>
+            <div className="panel" style={{ padding: 0 }}>
               <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>저장된 관심 조건</h2>
@@ -149,7 +149,7 @@ function InterestConditions() {
           </div>
 
           {/* Right Column */}
-          <div className="card" style={{ padding: 0 }}>
+          <div className="panel" style={{ padding: 0 }}>
             <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0' }}>
               <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>조건 상세 설정</h2>
               <p style={{ fontSize: '13px', color: '#64748b' }}>새로운 공고 정보를 필터링할 상세 기준을 입력하세요.</p>

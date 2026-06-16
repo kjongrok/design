@@ -277,7 +277,7 @@ function NoticeList() {
         </div>
 
         {/* Table */}
-        <div className="card" style={{ padding: 0 }}>
+        <div className="panel" style={{ padding: 0 }}>
           <div className="table-wrapper">
             <table>
               <thead>

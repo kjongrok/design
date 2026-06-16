@@ -181,7 +181,7 @@ function CalendarPage() {
           </div>
         )}
 
-        <div className="card" style={{ padding: '0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
+        <div className="panel" style={{ padding: '0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
             {['일','월','화','수','목','금','토'].map((d, i) => (
               <div key={d} style={{ padding: '12px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: i === 0 ? '#ef4444' : i === 6 ? '#3b82f6' : '#64748b' }}>
