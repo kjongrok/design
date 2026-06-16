@@ -12,6 +12,7 @@ function UserDashboard() {
   const [notices, setNotices] = useState([]);
   const [allNotices, setAllNotices] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   
   // Calendar state
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -48,6 +49,7 @@ function UserDashboard() {
       .then(res => {
         if (res.data.success) {
           setNotifications(res.data.items || []);
+          setUnreadCount(res.data.unreadCount || 0);
         }
       })
       .catch(err => console.error("알림 데이터를 가져오는데 실패했습니다.", err));
@@ -78,6 +80,17 @@ function UserDashboard() {
     return diff === 0 ? 'D-Day' : `D-${diff}`;
   };
 
+  // Calculate dynamic stats for metrics
+  const todayDateStr = today.toLocaleDateString();
+  const closingTodayCount = allNotices.filter(n => n.date && n.date.toLocaleDateString() === todayDateStr).length;
+  const activeCount = allNotices.filter(n => n.date && n.date >= today).length;
+  const totalMatchCount = allNotices.length;
+  const closingSoonCount = allNotices.filter(n => {
+    if (!n.date) return false;
+    const diffDays = Math.ceil((n.date - today) / (1000 * 60 * 60 * 24));
+    return diffDays >= 0 && diffDays <= 3;
+  }).length;
+
   return (
     <Layout>
       <div className="dashboard-container">
@@ -90,27 +103,27 @@ function UserDashboard() {
         <div className="metric-cards">
           <div className="metric-card">
             <div className="metric-icon"><FileText size={20} /></div>
-            <div className="metric-trend danger">전일 대비 ▲ 8건</div>
-            <div className="metric-label">오늘 신규 공고</div>
-            <div className="metric-value">25<span className="metric-unit">건</span></div>
+            <div className="metric-trend info">오늘 확인 필수</div>
+            <div className="metric-label">오늘 마감 공고</div>
+            <div className="metric-value">{closingTodayCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
             <div className="metric-icon" style={{backgroundColor: '#fff7ed', color: '#ea580c'}}><Target size={20} /></div>
-            <div className="metric-trend danger">전일 대비 ▲ 2건</div>
-            <div className="metric-label">내 매칭 공고</div>
-            <div className="metric-value">7<span className="metric-unit">건</span></div>
+            <div className="metric-trend info">진행 중 공고: {activeCount}건</div>
+            <div className="metric-label">전체 매칭 공고</div>
+            <div className="metric-value">{totalMatchCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
             <div className="metric-icon" style={{backgroundColor: '#fefce8', color: '#ca8a04'}}><Clock size={20} /></div>
             <div className="metric-trend warning">3일 이내 마감</div>
             <div className="metric-label">마감 임박 공고</div>
-            <div className="metric-value">3<span className="metric-unit">건</span></div>
+            <div className="metric-value">{closingSoonCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
-            <div className="metric-icon" style={{backgroundColor: '#eff6ff', color: '#2563eb'}}><Send size={20} /></div>
-            <div className="metric-trend info">오늘 09:00 발송</div>
-            <div className="metric-label">알림 발송 현황</div>
-            <div className="metric-value" style={{color: '#0f172a'}}>완료</div>
+            <div className="metric-icon" style={{backgroundColor: '#eff6ff', color: '#2563eb'}}><MailCheck size={20} /></div>
+            <div className="metric-trend danger">{unreadCount > 0 ? '새 알림이 있습니다' : '모두 확인 완료'}</div>
+            <div className="metric-label">미확인 알림</div>
+            <div className="metric-value">{unreadCount}<span className="metric-unit">건</span></div>
           </div>
         </div>
 
