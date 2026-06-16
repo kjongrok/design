@@ -15,6 +15,23 @@ function NoticeDetail() {
   const [aiSummary, setAiSummary] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
 
+  const formatKoreanDateTime = (dateStr) => {
+    if (!dateStr) return null;
+    let d = new Date(dateStr);
+    if (isNaN(d.getTime())) {
+      if (typeof dateStr === 'string') {
+        d = new Date(dateStr.replace(/-/g, '/').replace('T', ' '));
+      }
+      if (isNaN(d.getTime())) return dateStr;
+    }
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
+  };
+
   const handleFetchAiSummary = () => {
     setAiLoading(true);
     api.get(`/bid-notices/${id}/summary`, { timeout: 60000 })
@@ -207,13 +224,13 @@ function NoticeDetail() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '14px' }}>
                     <Calendar size={16} /> 게시 일시
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '14px' }}>{notice.posted_at || notice.registered_at || notice.last_synced_at || '미정'}</div>
+                  <div style={{ fontWeight: 700, fontSize: '14px' }}>{formatKoreanDateTime(notice.posted_at || notice.registered_at || notice.last_synced_at) || '미정'}</div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontSize: '14px' }}>
                     <Clock size={16} /> 마감 일시
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '14px', color: '#ef4444' }}>{notice.deadline_at || '미정'}</div>
+                  <div style={{ fontWeight: 700, fontSize: '14px', color: '#ef4444' }}>{formatKoreanDateTime(notice.deadline_at) || '미정'}</div>
                 </div>
               </div>
               
