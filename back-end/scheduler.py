@@ -31,7 +31,7 @@ def daily_email_job():
         print("[Scheduler] Daily email job error:", e)
 
 def start_scheduler():
-    scheduler = BackgroundScheduler(daemon=True)
+    scheduler = BackgroundScheduler(daemon=True, timezone="Asia/Seoul")
     
     # 환경변수에서 간격 가져오기 (기본값: 1시간 = 3600초)
     interval = int(os.environ.get("G2B_COLLECT_INTERVAL_SECONDS", 3600))
@@ -40,7 +40,7 @@ def start_scheduler():
     # 정기 실행 잡 등록
     scheduler.add_job(func=lambda: g2b_scraper.fetch_and_store_notices(hours_back=lookback), trigger="interval", seconds=interval)
     
-    # 매일 아침 09:00 이메일 발송 잡 등록
+    # 매일 아침 09:00 이메일 발송 잡 등록 (한국 시간 기준)
     scheduler.add_job(func=daily_email_job, trigger="cron", hour=9, minute=0)
     
     scheduler.start()
