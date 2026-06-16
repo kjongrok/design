@@ -17,7 +17,7 @@ function NoticeDetail() {
 
   const handleFetchAiSummary = () => {
     setAiLoading(true);
-    api.get(`/bid-notices/${id}/summary`)
+    api.get(`/bid-notices/${id}/summary`, { timeout: 60000 })
       .then(res => {
         if (res.data.success) {
           setAiSummary(res.data.summary);
