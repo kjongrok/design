@@ -47,7 +47,20 @@ class AIService:
 """
 
         try:
-            model = genai.GenerativeModel('gemini-pro')
+            valid_model_name = None
+            # API 키에 허용된 모델 목록 중 generateContent를 지원하는 gemini 모델을 자동 탐색
+            for m in genai.list_models():
+                if 'generateContent' in m.supported_generation_methods:
+                    name = m.name.replace('models/', '')
+                    if 'gemini' in name:
+                        valid_model_name = name
+                        if 'flash' in name:
+                            break  # flash 모델을 발견하면 최우선으로 선택
+
+            if not valid_model_name:
+                valid_model_name = 'gemini-1.5-flash'  # fallback
+
+            model = genai.GenerativeModel(valid_model_name)
             response = model.generate_content(prompt)
             return {"success": True, "summary": response.text}
         except Exception as e:
