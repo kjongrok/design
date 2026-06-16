@@ -60,7 +60,7 @@ function Login() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
-      <div style={{ display: 'flex', width: '1000px', minHeight: '600px', backgroundColor: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
+      <div style={{ display: 'flex', width: '1000px', minHeight: '600px', backgroundColor: 'var(--color-card-bg)', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--box-shadow)' }}>
         
         {/* Left Side */}
         <div style={{ width: '450px', backgroundColor: '#0f172a', padding: '60px 40px', color: '#fff', display: 'flex', flexDirection: 'column', position: 'relative' }}>
@@ -110,7 +110,7 @@ function Login() {
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom: '24px' }}>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이메일 주소</label>
-              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
                 <Mail size={20} color="#94a3b8" style={{ marginRight: '12px' }} />
                 <input 
                   type="email" 
@@ -125,7 +125,7 @@ function Login() {
             
             <div style={{ marginBottom: '24px' }}>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>비밀번호</label>
-              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
                 <Lock size={20} color="#94a3b8" style={{ marginRight: '12px' }} />
                 <input 
                   type={showPassword ? 'text' : 'password'} 
@@ -167,7 +167,7 @@ function Login() {
             <button 
               onClick={() => handleSocialLogin('google')}
               disabled={socialLoading !== null}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', border: '1px solid #cbd5e1', borderRadius: '8px', background: '#fff', cursor: socialLoading ? 'not-allowed' : 'pointer', opacity: socialLoading ? 0.7 : 1 }}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '12px', border: '1px solid var(--color-border)', borderRadius: '8px', background: '#fff', cursor: socialLoading ? 'not-allowed' : 'pointer', opacity: socialLoading ? 0.7 : 1 }}
             >
               {socialLoading === 'google' ? <Loader2 size={20} className="animate-spin" /> : 'Google'}
             </button>

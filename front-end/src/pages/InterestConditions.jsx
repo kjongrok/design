@@ -158,12 +158,12 @@ function InterestConditions() {
             <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>조건 명칭</label>
-                <input type="text" value={ruleName} onChange={(e) => setRuleName(e.target.value)} placeholder="예: 2025년 상반기 IT 시스템 유지보수" style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#f8fafc' }} />
+                <input type="text" value={ruleName} onChange={(e) => setRuleName(e.target.value)} placeholder="예: 2025년 상반기 IT 시스템 유지보수" style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#f8fafc' }} />
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>포함 키워드 (OR 매칭)</label>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', marginBottom: '12px' }}>
                   <input type="text" value={includeKwInput} onChange={e => setIncludeKwInput(e.target.value)} onKeyDown={handleAddKeyword} placeholder="키워드 입력 후 Enter" style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px' }} />
                   <Plus size={18} color="#94a3b8" />
                 </div>
@@ -178,13 +178,13 @@ function InterestConditions() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>제외 키워드 (선택)</label>
-                <input type="text" value={excludeKeywords} onChange={e => setExcludeKeywords(e.target.value)} placeholder="제외할 키워드를 콤마(,)로 구분하여 입력" style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#f8fafc' }} />
+                <input type="text" value={excludeKeywords} onChange={e => setExcludeKeywords(e.target.value)} placeholder="제외할 키워드를 콤마(,)로 구분하여 입력" style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#f8fafc' }} />
               </div>
 
               <div style={{ display: 'flex', gap: '16px' }}>
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>지역 선택</label>
-                  <select value={region} onChange={e => setRegion(e.target.value)} style={{ width: '100%', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', color: '#334155' }}>
+                  <select value={region} onChange={e => setRegion(e.target.value)} style={{ width: '100%', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', color: '#334155' }}>
                     <option value="전국">전국</option>
                     <option value="서울">서울</option>
                     <option value="경기">경기</option>
@@ -193,7 +193,7 @@ function InterestConditions() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>업종 구분</label>
-                  <select value={bizType} onChange={e => setBizType(e.target.value)} style={{ width: '100%', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', color: '#334155' }}>
+                  <select value={bizType} onChange={e => setBizType(e.target.value)} style={{ width: '100%', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', color: '#334155' }}>
                     <option value="전체 업종">전체 업종</option>
                     <option value="용역">용역</option>
                     <option value="물품">물품</option>
@@ -205,7 +205,7 @@ function InterestConditions() {
             </div>
             
             <div style={{ padding: '24px', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '16px' }}>
-              <button style={{ flex: 1, height: '44px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', fontWeight: 600, fontSize: '14px', color: '#334155' }} onClick={() => { setRuleName(''); setIncludeKeywords([]); setExcludeKeywords(''); }}>
+              <button style={{ flex: 1, height: '44px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', color: '#334155' }} onClick={() => { setRuleName(''); setIncludeKeywords([]); setExcludeKeywords(''); }}>
                 초기화
               </button>
               <button onClick={handleSave} style={{ flex: 2, height: '44px', backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', color: '#fff', cursor: 'pointer' }}>

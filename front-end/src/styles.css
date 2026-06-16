@@ -5,9 +5,9 @@
   --color-sidebar-text: #94a3b8;
   --color-sidebar-text-active: #111827;
   
-  --color-bg: #f1f5f9; /* 배경을 약간 어둡게 하여 흰색 카드가 돋보이게 함 */
+  --color-bg: #e2e8f0; /* 배경을 확연히 어둡게 처리 */
   --color-card-bg: #ffffff;
-  --color-border: #cbd5e1; /* 경계선을 조금 더 진하게 변경 */
+  --color-border: #94a3b8; /* 테두리를 더 또렷하게 변경 */
   
   --color-text-main: #0f172a;
   --color-text-sub: #64748b;

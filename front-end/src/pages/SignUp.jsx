@@ -44,7 +44,7 @@ function SignUp() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f8fafc', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
       
-      <div style={{ width: '560px', backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+      <div style={{ width: '560px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--box-shadow)' }}>
         
         {/* Header */}
         <div style={{ backgroundColor: '#0f172a', padding: '32px', color: '#fff', textAlign: 'center' }}>
@@ -70,7 +70,7 @@ function SignUp() {
             
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이름</label>
-              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
                 <User size={18} color="#94a3b8" style={{ marginRight: '12px' }} />
                 <input 
                   type="text" 
@@ -85,7 +85,7 @@ function SignUp() {
 
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이메일 주소</label>
-              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
                 <Mail size={18} color="#94a3b8" style={{ marginRight: '12px' }} />
                 <input 
                   type="email" 
@@ -101,7 +101,7 @@ function SignUp() {
             <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
               <div style={{ flex: 1 }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>비밀번호</label>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
                   <Lock size={18} color="#94a3b8" style={{ marginRight: '12px' }} />
                   <input 
                     type="password" 
@@ -115,7 +115,7 @@ function SignUp() {
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>비밀번호 확인</label>
-                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px' }}>
                   <Key size={18} color="#94a3b8" style={{ marginRight: '12px' }} />
                   <input 
                     type="password" 

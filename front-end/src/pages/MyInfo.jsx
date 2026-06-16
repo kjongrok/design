@@ -240,20 +240,20 @@ function MyInfo() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이름</label>
-                        <input type="text" value={personalInfo.name} onChange={e => setPersonalInfo({...personalInfo, name: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a' }} />
+                        <input type="text" value={personalInfo.name} onChange={e => setPersonalInfo({...personalInfo, name: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a' }} />
                       </div>
                       <div>
                         <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>회원 구분</label>
-                        <input type="text" value={user?.role === 'ADMIN' ? '관리자' : user?.role === 'COMPANY' ? '기업 회원' : '일반 회원'} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a', backgroundColor: '#f8fafc' }} readOnly />
+                        <input type="text" value={user?.role === 'ADMIN' ? '관리자' : user?.role === 'COMPANY' ? '기업 회원' : '일반 회원'} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a', backgroundColor: '#f8fafc' }} readOnly />
                       </div>
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이메일 주소</label>
-                      <input type="email" value={user?.email || ''} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a', backgroundColor: '#f8fafc' }} readOnly />
+                      <input type="email" value={user?.email || ''} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a', backgroundColor: '#f8fafc' }} readOnly />
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>연락처</label>
-                      <input type="text" placeholder="연락처를 입력하세요" value={personalInfo.phone} onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a' }} />
+                      <input type="text" placeholder="연락처를 입력하세요" value={personalInfo.phone} onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', color: '#0f172a' }} />
                     </div>
                   </div>
                 </div>
@@ -274,12 +274,12 @@ function MyInfo() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '8px' }}>상호명 (법인명)</label>
-                      <input type="text" value={companyInfo.company_name} onChange={e => setCompanyInfo({...companyInfo, company_name: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#fff' }} />
+                      <input type="text" value={companyInfo.company_name} onChange={e => setCompanyInfo({...companyInfo, company_name: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: 'var(--color-card-bg)' }} />
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '8px' }}>사업자등록번호</label>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <input type="text" value={companyInfo.business_registration_no} onChange={e => setCompanyInfo({...companyInfo, business_registration_no: e.target.value})} style={{ flex: 1, height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#fff' }} />
+                        <input type="text" value={companyInfo.business_registration_no} onChange={e => setCompanyInfo({...companyInfo, business_registration_no: e.target.value})} style={{ flex: 1, height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: 'var(--color-card-bg)' }} />
                         {companyInfo.is_verified === 1 ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0 16px', backgroundColor: '#f0fdf4', color: '#166534', borderRadius: '8px', fontWeight: 600, fontSize: '13px', border: '1px solid #bbf7d0' }}>
                             <CheckCircle size={16} /> 인증 완료
@@ -293,7 +293,7 @@ function MyInfo() {
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748b', marginBottom: '8px' }}>업태 (서비스/제조 등)</label>
-                      <input type="text" value={companyInfo.business_type} onChange={e => setCompanyInfo({...companyInfo, business_type: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: '#fff' }} />
+                      <input type="text" value={companyInfo.business_type} onChange={e => setCompanyInfo({...companyInfo, business_type: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px', backgroundColor: 'var(--color-card-bg)' }} />
                     </div>
                   </div>
 
@@ -302,15 +302,15 @@ function MyInfo() {
                       <ShieldCheck size={18} /> 우대 정책 및 인증 현황
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer' }}>
+                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer' }}>
                         <span style={{ fontSize: '14px', fontWeight: 500 }}>여성기업 인증</span>
                         <input type="checkbox" checked={companyInfo.is_woman_company === 1} onChange={e => setCompanyInfo({...companyInfo, is_woman_company: e.target.checked ? 1 : 0})} style={{ width: '18px', height: '18px' }} />
                       </label>
-                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer' }}>
+                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer' }}>
                         <span style={{ fontSize: '14px', fontWeight: 500 }}>장애인기업 인증</span>
                         <input type="checkbox" checked={companyInfo.is_disabled_company === 1} onChange={e => setCompanyInfo({...companyInfo, is_disabled_company: e.target.checked ? 1 : 0})} style={{ width: '18px', height: '18px' }} />
                       </label>
-                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer' }}>
+                      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer' }}>
                         <span style={{ fontSize: '14px', fontWeight: 500 }}>창업기업 (7년 이내)</span>
                         <input type="checkbox" checked={companyInfo.is_youth_company === 1} onChange={e => setCompanyInfo({...companyInfo, is_youth_company: e.target.checked ? 1 : 0})} style={{ width: '18px', height: '18px' }} />
                       </label>
@@ -328,7 +328,7 @@ function MyInfo() {
                     </div>
                     
                     {companyInfo.licenses.length === 0 && (
-                      <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', border: '1px dashed #cbd5e1', borderRadius: '8px', backgroundColor: '#fff' }}>
+                      <div style={{ padding: '24px', textAlign: 'center', color: '#94a3b8', border: '1px dashed #cbd5e1', borderRadius: '8px', backgroundColor: 'var(--color-card-bg)' }}>
                         등록된 면허가 없습니다.
                       </div>
                     )}
@@ -336,7 +336,7 @@ function MyInfo() {
                     {companyInfo.licenses.length > 0 && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {companyInfo.licenses.map((lic, idx) => (
-                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px' }}>
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                               <span style={{ backgroundColor: '#60a5fa', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600 }}>{lic.code}</span>
                               <span style={{ fontSize: '14px', fontWeight: 500 }}>{lic.name}</span>
@@ -349,7 +349,7 @@ function MyInfo() {
                   </div>
 
                   {/* Document Upload Section */}
-                  <div style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '24px' }}>
+                  <div style={{ backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '24px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                       <div style={{ fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Upload size={18} color="#475569" /> 증빙 서류 제출
@@ -362,7 +362,7 @@ function MyInfo() {
                     </div>
                     <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '16px' }}>여성기업확인서, 면허증 사본 등을 업로드하여 관리자의 승인을 받으세요.</p>
                     <div style={{ display: 'flex', gap: '12px' }}>
-                      <input type="file" onChange={handleFileUpload} style={{ flex: 1, padding: '8px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', backgroundColor: '#f8fafc' }} />
+                      <input type="file" onChange={handleFileUpload} style={{ flex: 1, padding: '8px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '13px', backgroundColor: '#f8fafc' }} />
                       <button onClick={submitVerificationDoc} style={{ padding: '0 16px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>제출하기</button>
                     </div>
                   </div>
@@ -383,22 +383,22 @@ function MyInfo() {
                 <div style={{ padding: '32px 40px', display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '500px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>기존 비밀번호</label>
-                    <input type="password" value={passwordData.old_password} onChange={e => setPasswordData({...passwordData, old_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
+                    <input type="password" value={passwordData.old_password} onChange={e => setPasswordData({...passwordData, old_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>새 비밀번호</label>
-                    <input type="password" value={passwordData.new_password} onChange={e => setPasswordData({...passwordData, new_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
+                    <input type="password" value={passwordData.new_password} onChange={e => setPasswordData({...passwordData, new_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>새 비밀번호 확인</label>
-                    <input type="password" value={passwordData.confirm_password} onChange={e => setPasswordData({...passwordData, confirm_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
+                    <input type="password" value={passwordData.confirm_password} onChange={e => setPasswordData({...passwordData, confirm_password: e.target.value})} style={{ width: '100%', height: '44px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', fontSize: '14px' }} />
                   </div>
                 </div>
                 <div style={{ padding: '24px 40px', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <button onClick={handleSavePassword} style={{ height: '40px', padding: '0 24px', backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', color: '#fff', cursor: 'pointer' }}>비밀번호 변경</button>
                   <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px', marginTop: '8px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
-                    <button onClick={handleDeleteAccount} style={{ height: '36px', padding: '0 16px', backgroundColor: '#fff', color: '#ef4444', border: '1px solid #fca5a5', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>계정 탈퇴</button>
-                    <button onClick={handleLogout} style={{ height: '36px', padding: '0 16px', backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}><LogOut size={16} /> 로그아웃</button>
+                    <button onClick={handleDeleteAccount} style={{ height: '36px', padding: '0 16px', backgroundColor: 'var(--color-card-bg)', color: '#ef4444', border: '1px solid #fca5a5', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>계정 탈퇴</button>
+                    <button onClick={handleLogout} style={{ height: '36px', padding: '0 16px', backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid var(--color-border)', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}><LogOut size={16} /> 로그아웃</button>
                   </div>
                 </div>
               </div>
@@ -410,7 +410,7 @@ function MyInfo() {
         {/* Checkbox List License Modal */}
         {isModalOpen && (
           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div style={{ width: '480px', backgroundColor: '#fff', borderRadius: '12px', display: 'flex', flexDirection: 'column', maxHeight: '80vh', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ width: '480px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', display: 'flex', flexDirection: 'column', maxHeight: '80vh', boxShadow: 'var(--box-shadow)' }}>
               <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '16px' }}>면허 및 업종 선택</h3>
                 <div style={{ position: 'relative' }}>
@@ -420,7 +420,7 @@ function MyInfo() {
                     placeholder="면허명 또는 코드 검색" 
                     value={searchLicense}
                     onChange={e => setSearchLicense(e.target.value)}
-                    style={{ width: '100%', height: '40px', padding: '0 12px 0 36px', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                    style={{ width: '100%', height: '40px', padding: '0 12px 0 36px', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
                   />
                 </div>
               </div>
@@ -430,7 +430,7 @@ function MyInfo() {
                   <div style={{ textAlign: 'center', color: '#94a3b8', padding: '20px' }}>검색 결과가 없습니다.</div>
                 ) : (
                   filteredLicenses.map(lic => (
-                    <label key={lic.code} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: selectedLicenses.includes(lic.code) ? '#f0f9ff' : '#fff' }}>
+                    <label key={lic.code} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', border: '1px solid var(--color-border)', borderRadius: '8px', cursor: 'pointer', backgroundColor: selectedLicenses.includes(lic.code) ? '#f0f9ff' : '#fff' }}>
                       <input 
                         type="checkbox" 
                         checked={selectedLicenses.includes(lic.code)} 

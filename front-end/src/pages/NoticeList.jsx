@@ -158,7 +158,7 @@ function NoticeList() {
         </div>
 
         {/* Advanced Search & Filter UI */}
-        <div style={{ padding: '24px', marginBottom: '24px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ padding: '24px', marginBottom: '24px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', boxShadow: 'var(--box-shadow)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           {/* Top Search Bar */}
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -175,7 +175,7 @@ function NoticeList() {
                     else setCurrentPage(1);
                   }
                 }}
-                style={{ width: '100%', height: '48px', paddingLeft: '48px', paddingRight: '16px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '15px', outline: 'none', transition: 'border-color 0.2s' }}
+                style={{ width: '100%', height: '48px', paddingLeft: '48px', paddingRight: '16px', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '15px', outline: 'none', transition: 'border-color 0.2s' }}
                 onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
                 onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
               />
@@ -208,7 +208,7 @@ function NoticeList() {
                 if (currentPage === 1) setTimeout(() => fetchNotices(1), 0);
                 else setCurrentPage(1);
               }}
-              style={{ flex: '1 1 140px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
+              style={{ flex: '1 1 140px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
               <option value="ALL">상태 (전체)</option>
               <option value="OPEN">진행중</option>
               <option value="CLOSED">마감</option>
@@ -221,7 +221,7 @@ function NoticeList() {
                 if (currentPage === 1) setTimeout(() => fetchNotices(1), 0);
                 else setCurrentPage(1);
               }}
-              style={{ flex: '1 1 160px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
+              style={{ flex: '1 1 160px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
               <option value="ALL">예산 (전체)</option>
               <option value="U_1">1억 미만</option>
               <option value="1_5">1억 ~ 5억</option>
@@ -236,7 +236,7 @@ function NoticeList() {
                 if (currentPage === 1) setTimeout(() => fetchNotices(1), 0);
                 else setCurrentPage(1);
               }}
-              style={{ flex: '1 1 160px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
+              style={{ flex: '1 1 160px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
               <option value="ALL">지역 (전국)</option>
               <option value="서울특별시">서울특별시</option>
               <option value="경기도">경기도</option>
@@ -256,7 +256,7 @@ function NoticeList() {
                 if (currentPage === 1) setTimeout(() => fetchNotices(1), 0);
                 else setCurrentPage(1);
               }}
-              style={{ flex: '1 1 160px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
+              style={{ flex: '1 1 160px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', color: '#334155', cursor: 'pointer', outline: 'none' }}>
               <option value="ALL">분류 (전체)</option>
               <option value="SERVC">용역</option>
               <option value="THNG">물품</option>
@@ -267,7 +267,7 @@ function NoticeList() {
             
             <button 
               onClick={resetFilters}
-              style={{ display: 'flex', alignItems: 'center', height: '40px', padding: '0 16px', backgroundColor: '#fff', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', border: '1px solid #cbd5e1', transition: 'all 0.2s' }}
+              style={{ display: 'flex', alignItems: 'center', height: '40px', padding: '0 16px', backgroundColor: 'var(--color-card-bg)', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', border: '1px solid var(--color-border)', transition: 'all 0.2s' }}
               onMouseOver={(e) => { e.target.style.backgroundColor = '#f8fafc'; e.target.style.color = '#334155'; }}
               onMouseOut={(e) => { e.target.style.backgroundColor = '#fff'; e.target.style.color = '#64748b'; }}
             >
@@ -322,7 +322,7 @@ function NoticeList() {
               <button 
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#fff', color: currentPage === 1 ? '#cbd5e1' : '#64748b', cursor: currentPage === 1 ? 'default' : 'pointer' }}><ChevronLeft size={16} /></button>
+                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-card-bg)', color: currentPage === 1 ? '#cbd5e1' : '#64748b', cursor: currentPage === 1 ? 'default' : 'pointer' }}><ChevronLeft size={16} /></button>
               
               {/* Pagination logic */}
               {(() => {
@@ -349,7 +349,7 @@ function NoticeList() {
               <button 
                 onClick={() => setCurrentPage(Math.min(Math.ceil(totalCount / itemsPerPage) || 1, currentPage + 1))}
                 disabled={currentPage === Math.ceil(totalCount / itemsPerPage) || totalCount === 0}
-                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#fff', color: (currentPage === Math.ceil(totalCount / itemsPerPage) || totalCount === 0) ? '#cbd5e1' : '#64748b', cursor: (currentPage === Math.ceil(totalCount / itemsPerPage) || totalCount === 0) ? 'default' : 'pointer' }}><ChevronRight size={16} /></button>
+                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-card-bg)', color: (currentPage === Math.ceil(totalCount / itemsPerPage) || totalCount === 0) ? '#cbd5e1' : '#64748b', cursor: (currentPage === Math.ceil(totalCount / itemsPerPage) || totalCount === 0) ? 'default' : 'pointer' }}><ChevronRight size={16} /></button>
             </div>
           </div>
         </div>

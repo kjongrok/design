@@ -28,7 +28,7 @@ function AdminLogs() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
           <button 
             onClick={() => navigate('/admin')} 
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #e2e8f0', backgroundColor: '#fff', cursor: 'pointer' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-card-bg)', cursor: 'pointer' }}
           >
             <ArrowLeft size={20} color="#64748b" />
           </button>

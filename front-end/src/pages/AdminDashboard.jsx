@@ -407,7 +407,7 @@ function AdminDashboard() {
                              <button onClick={() => handleVerify(c.user_id, 'REJECTED')} style={{ padding: '6px 12px', backgroundColor: '#ef4444', color: '#fff', borderRadius: '6px', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', border: 'none', cursor: 'pointer' }}>
                                <X size={14}/> 반려
                              </button>
-                             <button onClick={() => handleDeleteUser(c.user_id)} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #cbd5e1', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', marginLeft: '8px' }}>
+                             <button onClick={() => handleDeleteUser(c.user_id)} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', marginLeft: '8px' }}>
                                삭제
                              </button>
                            </div>
@@ -472,17 +472,17 @@ function AdminDashboard() {
                         <td style={{ padding: '16px', textAlign: 'right' }}>
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
                             {u.role === 'ADMIN' ? (
-                              <button onClick={() => handleUpdateUserRole(u.id, 'USER')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                              <button onClick={() => handleUpdateUserRole(u.id, 'USER')} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', color: '#475569', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                                 관리자 해임
                               </button>
                             ) : (
-                              <button onClick={() => handleUpdateUserRole(u.id, 'ADMIN')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #eab308', color: '#ca8a04', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                              <button onClick={() => handleUpdateUserRole(u.id, 'ADMIN')} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid #eab308', color: '#ca8a04', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                                 관리자 임명
                               </button>
                             )}
                             
                             {u.status === 'active' ? (
-                              <button onClick={() => handleUpdateUserStatus(u.id, 'blocked')} style={{ padding: '6px 12px', backgroundColor: '#fff', border: '1px solid #fca5a5', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                              <button onClick={() => handleUpdateUserStatus(u.id, 'blocked')} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid #fca5a5', color: '#ef4444', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                                 정지
                               </button>
                             ) : (
@@ -491,7 +491,7 @@ function AdminDashboard() {
                               </button>
                             )}
 
-                            <button onClick={() => handleDeleteRegularUser(u.id)} style={{ padding: '6px', backgroundColor: '#fff', border: 'none', color: '#94a3b8', borderRadius: '6px', cursor: 'pointer' }} title="삭제">
+                            <button onClick={() => handleDeleteRegularUser(u.id)} style={{ padding: '6px', backgroundColor: 'var(--color-card-bg)', border: 'none', color: '#94a3b8', borderRadius: '6px', cursor: 'pointer' }} title="삭제">
                               <X size={18} />
                             </button>
                           </div>

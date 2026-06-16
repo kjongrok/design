@@ -90,7 +90,7 @@ function NoticeDetail() {
                   <button style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#0f172a', color: '#fff', padding: '0 16px', height: '40px', borderRadius: '8px', fontWeight: 600, fontSize: '14px' }}>
                     <Heart size={16} /> 관심 등록
                   </button>
-                  <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#64748b' }}>
+                  <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', border: '1px solid var(--color-border)', borderRadius: '8px', color: '#64748b' }}>
                     <Share2 size={16} />
                   </button>
                 </div>
@@ -226,7 +226,7 @@ function NoticeDetail() {
                   <ExternalLink size={18} /> 나라장터 원본 공고 보기
                 </button>
               )}
-              <button onClick={() => navigate('/notices')} style={{ width: '100%', height: '48px', backgroundColor: '#fff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <button onClick={() => navigate('/notices')} style={{ width: '100%', height: '48px', backgroundColor: 'var(--color-card-bg)', color: '#0f172a', border: '1px solid var(--color-border)', borderRadius: '8px', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                 목록으로 돌아가기
               </button>
             </div>

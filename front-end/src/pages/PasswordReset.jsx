@@ -16,7 +16,7 @@ function PasswordReset() {
         <div style={{ fontSize: '14px', color: '#64748b' }}>Public Procurement Intelligence</div>
       </div>
 
-      <div style={{ width: '480px', backgroundColor: '#fff', borderRadius: '12px', padding: '40px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', marginBottom: '32px' }}>
+      <div style={{ width: '480px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', padding: '40px', boxShadow: 'var(--box-shadow)', marginBottom: '32px' }}>
         
         <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '12px' }}>비밀번호 재설정</h2>
         <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginBottom: '32px' }}>
@@ -26,7 +26,7 @@ function PasswordReset() {
         <form onSubmit={(e) => { e.preventDefault(); alert('링크가 발송되었습니다.'); }}>
           <div style={{ marginBottom: '24px' }}>
             <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>이메일 주소</label>
-            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '48px' }}>
               <Mail size={20} color="#94a3b8" style={{ marginRight: '12px' }} />
               <input type="email" placeholder="example@domain.com" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '15px' }} />
             </div>

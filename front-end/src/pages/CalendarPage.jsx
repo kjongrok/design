@@ -102,13 +102,13 @@ function CalendarPage() {
               <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}><ChevronLeft size={20} color="#475569" /></button>
               <span style={{ fontSize: '16px', fontWeight: 700, color: '#0f172a', minWidth: '100px', textAlign: 'center' }}>{year}년 {month + 1}월</span>
               <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}><ChevronRight size={20} color="#475569" /></button>
-              <button onClick={handleToday} style={{ marginLeft: '8px', border: '1px solid #cbd5e1', backgroundColor: '#fff', color: '#475569', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>오늘</button>
+              <button onClick={handleToday} style={{ marginLeft: '8px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: '#475569', padding: '4px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>오늘</button>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
             <button 
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: isFilterOpen ? '#f1f5f9' : '#fff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '0 16px', height: '40px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: isFilterOpen ? '#f1f5f9' : '#fff', color: '#0f172a', border: '1px solid var(--color-border)', padding: '0 16px', height: '40px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>
               <Filter size={16} /> 조건 필터
             </button>
           </div>
@@ -116,19 +116,19 @@ function CalendarPage() {
 
         {/* Filter Area (Toggleable) */}
         {isFilterOpen && (
-          <div style={{ padding: '20px', marginBottom: '24px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ padding: '20px', marginBottom: '24px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', boxShadow: 'var(--box-shadow)', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
               <input 
                 type="text"
                 placeholder="공고명 검색"
                 value={filterKeyword}
                 onChange={(e) => setFilterKeyword(e.target.value)}
-                style={{ flex: '1 1 200px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', fontSize: '13px', outline: 'none' }}
+                style={{ flex: '1 1 200px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', fontSize: '13px', outline: 'none' }}
               />
               <select 
                 value={filterStatus} 
                 onChange={(e) => setFilterStatus(e.target.value)}
-                style={{ flex: '1 1 120px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
+                style={{ flex: '1 1 120px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
                 <option value="ALL">상태 (전체)</option>
                 <option value="OPEN">진행중</option>
                 <option value="CLOSED">마감</option>
@@ -136,7 +136,7 @@ function CalendarPage() {
               <select 
                 value={filterBudget} 
                 onChange={(e) => setFilterBudget(e.target.value)}
-                style={{ flex: '1 1 120px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
+                style={{ flex: '1 1 120px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
                 <option value="ALL">예산 (전체)</option>
                 <option value="U_1">1억 미만</option>
                 <option value="1_5">1억 ~ 5억</option>
@@ -146,7 +146,7 @@ function CalendarPage() {
               <select 
                 value={filterRegion} 
                 onChange={(e) => setFilterRegion(e.target.value)}
-                style={{ flex: '1 1 140px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
+                style={{ flex: '1 1 140px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
                 <option value="ALL">지역 (전국)</option>
                 <option value="서울특별시">서울특별시</option>
                 <option value="경기도">경기도</option>
@@ -159,7 +159,7 @@ function CalendarPage() {
               <select 
                 value={filterCategory} 
                 onChange={(e) => setFilterCategory(e.target.value)}
-                style={{ flex: '1 1 120px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
+                style={{ flex: '1 1 120px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '40px', backgroundColor: '#f8fafc', fontSize: '13px', cursor: 'pointer', outline: 'none' }}>
                 <option value="ALL">분류 (전체)</option>
                 <option value="SERVC">용역</option>
                 <option value="THNG">물품</option>
@@ -173,7 +173,7 @@ function CalendarPage() {
                   setFilterRegion('ALL');
                   setFilterCategory('ALL');
                 }}
-                style={{ height: '40px', padding: '0 16px', backgroundColor: '#fff', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', border: '1px solid #cbd5e1' }}
+                style={{ height: '40px', padding: '0 16px', backgroundColor: 'var(--color-card-bg)', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', border: '1px solid var(--color-border)' }}
               >
                 초기화
               </button>
@@ -196,7 +196,7 @@ function CalendarPage() {
             {[...Array(firstDayOfMonth)].map((_, i) => {
               const d = daysInPrevMonth - firstDayOfMonth + i + 1;
               return (
-                <div key={`p${i}`} style={{ backgroundColor: '#fff', padding: '12px', color: '#cbd5e1' }}>
+                <div key={`p${i}`} style={{ backgroundColor: 'var(--color-card-bg)', padding: '12px', color: '#cbd5e1' }}>
                   <span style={{ fontSize: '14px', fontWeight: 500 }}>{d}</span>
                 </div>
               );
@@ -284,7 +284,7 @@ function CalendarPage() {
             
             {/* Next month padding to complete grid */}
             {[...Array((7 - ((firstDayOfMonth + daysInMonth) % 7)) % 7)].map((_, i) => (
-              <div key={`n${i}`} style={{ backgroundColor: '#fff', padding: '12px', color: '#cbd5e1' }}>
+              <div key={`n${i}`} style={{ backgroundColor: 'var(--color-card-bg)', padding: '12px', color: '#cbd5e1' }}>
                 <span style={{ fontSize: '14px', fontWeight: 500 }}>{i + 1}</span>
               </div>
             ))}
@@ -297,7 +297,7 @@ function CalendarPage() {
       {/* Date Detail Modal */}
       {selectedDateNotices && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-          <div style={{ width: '600px', maxHeight: '80vh', backgroundColor: '#fff', borderRadius: '16px', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+          <div style={{ width: '600px', maxHeight: '80vh', backgroundColor: 'var(--color-card-bg)', borderRadius: '16px', display: 'flex', flexDirection: 'column', boxShadow: 'var(--box-shadow)' }}>
             <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>
@@ -320,7 +320,7 @@ function CalendarPage() {
                 <div 
                   key={idx}
                   onClick={() => navigate('/notice/' + n.id)}
-                  style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', cursor: 'pointer', transition: 'box-shadow 0.2s', display: 'flex', flexDirection: 'column', gap: '12px' }}
+                  style={{ backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', borderRadius: '12px', padding: '16px', cursor: 'pointer', transition: 'box-shadow 0.2s', display: 'flex', flexDirection: 'column', gap: '12px' }}
                   onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)'}
                   onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                 >
@@ -352,7 +352,7 @@ function CalendarPage() {
               ))}
             </div>
             
-            <div style={{ padding: '16px 24px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', backgroundColor: '#fff', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}>
+            <div style={{ padding: '16px 24px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', backgroundColor: 'var(--color-card-bg)', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}>
               <button 
                 onClick={() => setSelectedDateNotices(null)}
                 style={{ padding: '0 24px', height: '40px', backgroundColor: '#0f172a', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}

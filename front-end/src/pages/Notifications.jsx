@@ -89,18 +89,18 @@ function Notifications() {
 
         {/* Filter Area */}
         {isFilterOpen && (
-          <div style={{ padding: '20px', marginBottom: '24px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', border: '1px solid #e2e8f0', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div style={{ padding: '20px', marginBottom: '24px', backgroundColor: 'var(--color-card-bg)', borderRadius: '12px', boxShadow: 'var(--box-shadow)', border: '1px solid var(--color-border)', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
             <input 
               type="text"
               placeholder="제목, 내용 검색"
               value={filterKeyword}
               onChange={(e) => setFilterKeyword(e.target.value)}
-              style={{ flex: '1 1 300px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 16px', height: '44px', fontSize: '14px', outline: 'none' }}
+              style={{ flex: '1 1 300px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 16px', height: '44px', fontSize: '14px', outline: 'none' }}
             />
             <select 
               value={filterReadStatus} 
               onChange={(e) => setFilterReadStatus(e.target.value)}
-              style={{ flex: '0 0 150px', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0 12px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', cursor: 'pointer', outline: 'none' }}>
+              style={{ flex: '0 0 150px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', height: '44px', backgroundColor: '#f8fafc', fontSize: '14px', cursor: 'pointer', outline: 'none' }}>
               <option value="ALL">상태 (전체)</option>
               <option value="READ">읽음</option>
               <option value="UNREAD">새 알림</option>
@@ -110,7 +110,7 @@ function Notifications() {
                 setFilterKeyword('');
                 setFilterReadStatus('ALL');
               }}
-              style={{ height: '44px', padding: '0 20px', backgroundColor: '#fff', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', border: '1px solid #cbd5e1' }}
+              style={{ height: '44px', padding: '0 20px', backgroundColor: 'var(--color-card-bg)', color: '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', border: '1px solid var(--color-border)' }}
             >
               초기화
             </button>
@@ -197,7 +197,7 @@ function Notifications() {
                 <button 
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#fff', color: currentPage === 1 ? '#cbd5e1' : '#475569', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-card-bg)', color: currentPage === 1 ? '#cbd5e1' : '#475569', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -207,7 +207,7 @@ function Notifications() {
                   if (page < currentPage - 2 || page > currentPage + 2) {
                     if (page === 1 || page === totalPages) {
                       return (
-                        <button key={page} onClick={() => setCurrentPage(page)} style={{ width: '32px', height: '32px', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#fff', color: '#475569', cursor: 'pointer' }}>{page}</button>
+                        <button key={page} onClick={() => setCurrentPage(page)} style={{ width: '32px', height: '32px', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-card-bg)', color: '#475569', cursor: 'pointer' }}>{page}</button>
                       );
                     }
                     if (page === currentPage - 3 || page === currentPage + 3) {
@@ -238,7 +238,7 @@ function Notifications() {
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #cbd5e1', borderRadius: '4px', backgroundColor: '#fff', color: currentPage === totalPages ? '#cbd5e1' : '#475569', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                  style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--color-border)', borderRadius: '4px', backgroundColor: 'var(--color-card-bg)', color: currentPage === totalPages ? '#cbd5e1' : '#475569', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
                 >
                   <ChevronRight size={16} />
                 </button>
