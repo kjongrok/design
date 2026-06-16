@@ -28,8 +28,24 @@ function UserDashboard() {
             match: `${Math.floor(item.match_score || 99)}%`,
             name: item.title,
             org: item.notice_org_name || item.demand_org_name || "알 수 없음",
-            date: item.deadline_at ? new Date(item.deadline_at) : null,
-            dateStr: item.deadline_at ? new Date(item.deadline_at).toLocaleDateString() : '미정',
+            date: item.deadline_at ? (() => {
+              let d = new Date(item.deadline_at);
+              if (isNaN(d.getTime()) && typeof item.deadline_at === 'string') {
+                d = new Date(item.deadline_at.replace(/-/g, '/').replace('T', ' '));
+              }
+              return isNaN(d.getTime()) ? null : d;
+            })() : null,
+            dateStr: item.deadline_at ? (() => {
+              let d = new Date(item.deadline_at);
+              if (isNaN(d.getTime()) && typeof item.deadline_at === 'string') {
+                d = new Date(item.deadline_at.replace(/-/g, '/').replace('T', ' '));
+              }
+              if (isNaN(d.getTime())) return item.deadline_at;
+              const year = d.getFullYear();
+              const month = String(d.getMonth() + 1).padStart(2, '0');
+              const day = String(d.getDate()).padStart(2, '0');
+              return `${year}-${month}-${day}`;
+            })() : '미정',
             budget: item.estimated_price ? parseInt(item.estimated_price).toLocaleString() : '미정',
             keywords: item.matched_keywords ? item.matched_keywords.split(',') : []
           }));

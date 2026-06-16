@@ -21,6 +21,24 @@ function NoticeList() {
   const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 50;
 
+  const formatDateTime = (dateStr) => {
+    if (!dateStr) return '미정';
+    let d = new Date(dateStr);
+    if (isNaN(d.getTime())) {
+      if (typeof dateStr === 'string') {
+        d = new Date(dateStr.replace(/-/g, '/').replace('T', ' '));
+      }
+      if (isNaN(d.getTime())) return dateStr;
+    }
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
+
   const fetchNotices = (page = currentPage) => {
     let params = new URLSearchParams();
     
@@ -56,8 +74,9 @@ function NoticeList() {
             num: item.bid_notice_no ? `제 ${item.bid_notice_no}-${item.bid_notice_ord}호` : item.notice_no,
             org: item.notice_org_name || item.demand_org_name || "알 수 없음",
             budget: item.estimated_price ? parseInt(item.estimated_price).toLocaleString() : '미정',
-            date: item.deadline_at ? new Date(item.deadline_at).toLocaleDateString() : '미정',
-            dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
+            posted: item.posted_at ? formatDateTime(item.posted_at) : '미정',
+            date: item.deadline_at ? formatDateTime(item.deadline_at) : '미정',
+            dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(typeof item.deadline_at === 'string' ? item.deadline_at.replace(/-/g, '/') : item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
             highlightDate: false,
             status: item.status === 'OPEN' ? '진행중' : '마감'
           }));
@@ -77,13 +96,14 @@ function NoticeList() {
       return;
     }
     
-    const headers = ['일치도', '공고명', '공고번호', '기관명', '마감일', 'D-Day', '상태', '예산(원)'];
+    const headers = ['일치도', '공고명', '공고번호', '기관명', '게시일시', '마감일시', 'D-Day', '상태', '예산(원)'];
     const rows = notices.map(n => [
       n.match,
       `"${n.name.replace(/"/g, '""')}"`,
       n.num,
       `"${n.org}"`,
-      n.date,
+      `"${n.posted}"`,
+      `"${n.date}"`,
       n.dday,
       n.status,
       `"${n.budget}"`
@@ -122,8 +142,9 @@ function NoticeList() {
             num: item.bid_notice_no ? `제 ${item.bid_notice_no}-${item.bid_notice_ord}호` : item.notice_no,
             org: item.notice_org_name || item.demand_org_name || "알 수 없음",
             budget: item.estimated_price ? parseInt(item.estimated_price).toLocaleString() : '미정',
-            date: item.deadline_at ? new Date(item.deadline_at).toLocaleDateString() : '미정',
-            dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
+            posted: item.posted_at ? formatDateTime(item.posted_at) : '미정',
+            date: item.deadline_at ? formatDateTime(item.deadline_at) : '미정',
+            dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(typeof item.deadline_at === 'string' ? item.deadline_at.replace(/-/g, '/') : item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
             highlightDate: false,
             status: item.status === 'OPEN' ? '진행중' : '마감'
           }));
@@ -286,7 +307,8 @@ function NoticeList() {
                   <th>공고명</th>
                   <th>기관명</th>
                   <th>예산(원)</th>
-                  <th style={{ textAlign: 'center' }}>마감일</th>
+                  <th style={{ textAlign: 'center' }}>게시일시</th>
+                  <th style={{ textAlign: 'center' }}>마감일시</th>
                   <th>상태</th>
                 </tr>
               </thead>
@@ -300,6 +322,9 @@ function NoticeList() {
                     </td>
                     <td style={{ color: '#475569' }}>{n.org}</td>
                     <td style={{ color: '#475569' }}>{n.budget}</td>
+                    <td style={{ textAlign: 'center', color: '#475569', fontSize: '13px' }}>
+                      {n.posted}
+                    </td>
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ fontWeight: 600, color: n.highlightDate ? '#ef4444' : '#0f172a', marginBottom: '4px' }}>{n.date}</div>
                       <div style={{ fontSize: '12px', color: '#64748b' }}>{n.dday}</div>
