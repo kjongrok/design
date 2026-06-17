@@ -12,6 +12,7 @@ class EmailService:
         self.port = int(os.environ.get("SMTP_PORT", 587))
         self.user = os.environ.get("SMTP_USER")
         self.password = os.environ.get("SMTP_PASSWORD")
+        self.frontend_url = os.environ.get("FRONTEND_URL", "https://web-bidmatch-frontend-mqf5nycdd44e8d2c.sel3.cloudtype.app")
 
     def list_histories(self, user_id=None):
         return self.repository.list(user_id)
@@ -73,10 +74,10 @@ class EmailService:
                 </div>
             """
 
-        html_content += """
+        html_content += f"""
                 </div>
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="http://localhost:5173/dashboard" style="background-color: #0f172a; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">대시보드에서 전체 확인하기</a>
+                    <a href="{self.frontend_url}/dashboard" style="background-color: #0f172a; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">대시보드에서 전체 확인하기</a>
                 </div>
                 <div class="footer">
                     본 메일은 발신전용 메일입니다. <br/>
@@ -134,7 +135,7 @@ class EmailService:
                 <div class="pw-box">{temp_password}</div>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <a href="http://localhost:5173/login" style="background-color: #0f172a; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">로그인하러 가기</a>
+                    <a href="{self.frontend_url}/login" style="background-color: #0f172a; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">로그인하러 가기</a>
                 </div>
                 <div class="footer">
                     본 메일은 발신전용 메일입니다. <br/>
