@@ -7,11 +7,11 @@
 > **입찰 담당자를 위한 나라장터 맞춤 공고 자동 수집 및 이메일 알림 B2B SaaS**
 
 <div align="center">
-  <video src="./assets/videos/demo_video.mp4" controls="controls" width="80%" autoplay loop muted>
-    영상이 지원되지 않는 브라우저입니다.
-  </video>
-  <br/>
-  <em>▶️ BidMatch 핵심 기능 시연 영상</em>
+  <h3>
+    <a href="https://github.com/kjongrok/BidMatch/raw/master/assets/videos/demo_video.mp4">
+      ▶️ BidMatch 핵심 기능 시연 영상 보기 (클릭 시 재생)
+    </a>
+  </h3>
 </div>
 
 BidMatch는 매일 반복되는 공고 검색의 부담, 복잡한 조건 관리, 운영 관리의 부재라는 3가지 핵심 문제를 **자동화**와 **조건 매칭**으로 해결하기 위해 탄생한 서비스입니다. 나라장터 맞춤 공고 알림 서비스로, 공공입찰 공고 수집부터 조건 매칭, 이메일 알림, 운영 관리까지 연결하는 업무용 웹 애플리케이션입니다.
