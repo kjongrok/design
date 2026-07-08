@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Badge from '../components/UI/Badge';
-import { Download, ChevronDown, ChevronLeft, ChevronRight, Search, Filter, RotateCcw } from 'lucide-react';
+import { Download, ChevronDown, ChevronLeft, ChevronRight, Search, Filter, RotateCcw, Heart } from 'lucide-react';
 import api from '../utils/api';
 
 function NoticeList() {
@@ -69,7 +69,7 @@ function NoticeList() {
         if (data && data.items) {
           const mapped = data.items.map(item => ({
             id: item.id,
-            match: "95%", // 매칭엔진 완성 전 임시 표기
+            match: "95%",
             name: item.title,
             num: item.bid_notice_no ? `제 ${item.bid_notice_no}-${item.bid_notice_ord}호` : item.notice_no,
             org: item.notice_org_name || item.demand_org_name || "알 수 없음",
@@ -78,7 +78,8 @@ function NoticeList() {
             date: item.deadline_at ? formatDateTime(item.deadline_at) : '미정',
             dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(typeof item.deadline_at === 'string' ? item.deadline_at.replace(/-/g, '/') : item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
             highlightDate: false,
-            status: item.status === 'OPEN' ? '진행중' : '마감'
+            status: item.status === 'OPEN' ? '진행중' : '마감',
+            is_interest: item.is_interest
           }));
           setNotices(mapped);
           setTotalCount(data.total || 0);
@@ -146,7 +147,8 @@ function NoticeList() {
             date: item.deadline_at ? formatDateTime(item.deadline_at) : '미정',
             dday: item.deadline_at ? `D-${Math.max(0, Math.ceil((new Date(typeof item.deadline_at === 'string' ? item.deadline_at.replace(/-/g, '/') : item.deadline_at) - new Date()) / (1000 * 60 * 60 * 24)))}` : '상시',
             highlightDate: false,
-            status: item.status === 'OPEN' ? '진행중' : '마감'
+            status: item.status === 'OPEN' ? '진행중' : '마감',
+            is_interest: item.is_interest
           }));
           setNotices(mapped);
           setTotalCount(data.total || 0);
@@ -317,7 +319,12 @@ function NoticeList() {
                   <tr key={i} onClick={() => navigate(`/notice/${n.id}`)} style={{ cursor: 'pointer' }} className="hover-row">
                     <td><Badge variant="info">{n.match}</Badge></td>
                     <td>
-                      <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>{n.name}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        {n.is_interest && (
+                          <Heart size={15} fill="#ef4444" color="#ef4444" style={{ flexShrink: 0 }} />
+                        )}
+                        <span style={{ fontWeight: 700, color: '#0f172a' }}>{n.name}</span>
+                      </div>
                       <div style={{ fontSize: '12px', color: '#64748b' }}>{n.num}</div>
                     </td>
                     <td style={{ color: '#475569' }}>{n.org}</td>

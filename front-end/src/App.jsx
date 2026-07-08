@@ -17,6 +17,10 @@ import SignUp from './pages/SignUp';
 import PasswordReset from './pages/PasswordReset';
 import CalendarPage from './pages/CalendarPage';
 import OAuthCallback from './pages/OAuthCallback';
+import SpecificationList from './pages/SpecificationList';
+import BidResultList from './pages/BidResultList';
+import ProposalSupport from './pages/ProposalSupport';
+import InterestNotices from './pages/InterestNotices';
 
 function App() {
   return (
@@ -38,6 +42,10 @@ function App() {
           <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><MyInfo /></ProtectedRoute>} />
+          <Route path="/specifications" element={<ProtectedRoute><SpecificationList /></ProtectedRoute>} />
+          <Route path="/results" element={<ProtectedRoute><BidResultList /></ProtectedRoute>} />
+          <Route path="/proposal" element={<ProtectedRoute><ProposalSupport /></ProtectedRoute>} />
+          <Route path="/interests" element={<ProtectedRoute><InterestNotices /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/logs" element={<ProtectedRoute requireAdmin={true}><AdminLogs /></ProtectedRoute>} />
         </Routes>

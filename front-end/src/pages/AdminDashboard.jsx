@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
-import { RefreshCcw, Users, Monitor, Mail, AlertCircle, AlertTriangle, Info, CheckCircle2, Check, X, FileText } from 'lucide-react';
+import { RefreshCcw, Users, Monitor, Mail, AlertCircle, AlertTriangle, Info, CheckCircle2, Check, X, FileText, CheckSquare, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import Badge from '../components/UI/Badge';
 
 function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('home');
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
+  const [queue, setQueue] = useState([]); // 자격요건 검수 큐 상태 추가
   
   const [stats, setStats] = useState({
     total_users: 0,
@@ -53,6 +55,14 @@ function AdminDashboard() {
     }).catch(err => console.error(err));
   };
 
+  const fetchQueue = () => {
+    api.get('/admin/verification-queue').then(res => {
+      if (res.data.success) {
+        setQueue(res.data.items || []);
+      }
+    }).catch(err => console.error(err));
+  };
+
   useEffect(() => {
     fetchStats();
     fetchLogs();
@@ -63,6 +73,8 @@ function AdminDashboard() {
       fetchCompanies();
     } else if (activeTab === 'users') {
       fetchUsers();
+    } else if (activeTab === 'verification_queue') {
+      fetchQueue();
     }
   }, [activeTab]);
 
@@ -98,6 +110,19 @@ function AdminDashboard() {
         alert("처리 중 오류가 발생했습니다.");
         console.error(err);
       });
+  };
+
+  const handleVerifyQueueItem = (queueId, status) => {
+    const actionStr = status === 'APPROVED' ? '검수 승인(RDB 반영)' : '보정 대상 등록';
+    if (!window.confirm(`해당 건을 ${actionStr} 처리하시겠습니까?`)) return;
+    api.post('/admin/verification-queue', { queue_id: queueId, status })
+      .then(res => {
+        if (res.data.success) {
+          alert(res.data.message);
+          fetchQueue();
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const handleDeleteUser = (userId) => {
@@ -195,6 +220,17 @@ function AdminDashboard() {
             기업 증빙 관리
           </button>
           <button 
+            onClick={() => setActiveTab('verification_queue')}
+            style={{ padding: '12px 16px', fontWeight: 600, color: activeTab === 'verification_queue' ? '#0f172a' : '#64748b', borderBottom: activeTab === 'verification_queue' ? '2px solid #0f172a' : '2px solid transparent', backgroundColor: 'transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            자격진단 검수 큐
+            {queue.filter(q => q.status === 'PENDING').length > 0 && (
+              <span style={{ backgroundColor: '#ef4444', color: '#fff', fontSize: '11px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>
+                {queue.filter(q => q.status === 'PENDING').length}
+              </span>
+            )}
+          </button>
+          <button 
             onClick={() => setActiveTab('users')}
             style={{ padding: '12px 16px', fontWeight: 600, color: activeTab === 'users' ? '#0f172a' : '#64748b', borderBottom: activeTab === 'users' ? '2px solid #0f172a' : '2px solid transparent', backgroundColor: 'transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', cursor: 'pointer', fontSize: '15px' }}
           >
@@ -207,13 +243,13 @@ function AdminDashboard() {
             <div className="metric-cards">
               <div className="metric-card">
                 <div className="metric-icon" style={{ backgroundColor: '#eff6ff', color: '#0f172a' }}><Users size={20} /></div>
-                <div className="metric-trend info" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>가입 완료</div>
+                <div className="metric-trend info">가입 완료</div>
                 <div className="metric-label">총 사용자 수</div>
                 <div className="metric-value">{stats.total_users.toLocaleString()}<span className="metric-unit">명</span></div>
               </div>
               <div className="metric-card">
                 <div className="metric-icon" style={{ backgroundColor: '#ffedd5', color: '#0f172a' }}><Monitor size={20} /></div>
-                <div className="metric-trend info" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>활성화 상태</div>
+                <div className="metric-trend info">활성화 상태</div>
                 <div className="metric-label">설정된 조건 수</div>
                 <div className="metric-value">{stats.total_rules.toLocaleString()}<span className="metric-unit">건</span></div>
               </div>
@@ -426,6 +462,69 @@ function AdminDashboard() {
                </table>
              </div>
             </div>
+        ) : activeTab === 'verification_queue' ? (
+          /* 자격진단 검수 큐 탭 화면 추가 */
+          <div className="panel">
+            <div className="panel-header" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <ShieldAlert size={20} color="#ea580c" />
+              <div>
+                <div className="panel-title">AI 자격요건 검수 큐 (신규 / 애매조건 점검)</div>
+                <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>AI(Qwen3-8B sLLM)가 수집 공고 원문에서 파싱한 항목 중 신뢰도가 낮거나 예외 사항이 발견되어 마스터 규칙 데이터 검수가 요구되는 대상 목록입니다.</p>
+              </div>
+            </div>
+            <div style={{ padding: '24px', overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b', fontSize: '13px' }}>
+                    <th style={{ padding: '12px 16px', width: '120px' }}>공고 번호</th>
+                    <th style={{ padding: '12px 16px', width: '220px' }}>사업명</th>
+                    <th style={{ padding: '12px 16px' }}>원문 요건 및 조항</th>
+                    <th style={{ padding: '12px 16px', width: '150px' }}>AI 추출 요건</th>
+                    <th style={{ padding: '12px 16px', width: '100px' }}>신뢰도</th>
+                    <th style={{ padding: '12px 16px', width: '140px', textAlign: 'right' }}>관리 행위</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {queue.map(item => (
+                    <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}>
+                      <td style={{ padding: '16px', color: '#64748b', fontWeight: 600 }}>{item.notice_no}</td>
+                      <td style={{ padding: '16px', fontWeight: 700, color: '#0f172a' }}>{item.title}</td>
+                      <td style={{ padding: '16px', color: '#475569', lineHeight: 1.5 }}>
+                        <div style={{ backgroundColor: '#f8fafc', padding: '10px 12px', borderRadius: '6px', border: '1px solid #f1f5f9', fontSize: '12px' }}>
+                          <strong>면허:</strong> {item.license_raw} <br/>
+                          <strong>지역:</strong> {item.area_raw}
+                        </div>
+                      </td>
+                      <td style={{ padding: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 600 }}>[면허] {item.extracted_licenses}</span>
+                          <span style={{ fontSize: '11px', fontWeight: 600 }}>[지역] {item.extracted_area}</span>
+                        </div>
+                      </td>
+                      <td style={{ padding: '16px', fontWeight: 700, color: item.confidence < 80 ? '#ef4444' : '#ea580c' }}>
+                        {item.confidence}%
+                      </td>
+                      <td style={{ padding: '16px', textAlign: 'right' }}>
+                        {item.status === 'PENDING' ? (
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                            <button onClick={() => handleVerifyQueueItem(item.id, 'APPROVED')} style={{ padding: '6px 10px', backgroundColor: '#22c55e', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>승인</button>
+                            <button onClick={() => handleVerifyQueueItem(item.id, 'REJECTED')} style={{ padding: '6px 10px', backgroundColor: '#ef4444', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>보정</button>
+                          </div>
+                        ) : (
+                          <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 600 }}>RDB 검수완료</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {queue.length === 0 && (
+                    <tr>
+                      <td colSpan="6" style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>검수 대기 중인 조건 분석 큐가 존재하지 않습니다.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : activeTab === 'users' ? (
             <div className="panel">
               <div className="panel-header">
@@ -473,11 +572,11 @@ function AdminDashboard() {
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
                             {u.role === 'ADMIN' ? (
                               <button onClick={() => handleUpdateUserRole(u.id, 'USER')} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid var(--color-border)', color: '#475569', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                                관리자 해임
+                                 관리자 해임
                               </button>
                             ) : (
                               <button onClick={() => handleUpdateUserRole(u.id, 'ADMIN')} style={{ padding: '6px 12px', backgroundColor: 'var(--color-card-bg)', border: '1px solid #eab308', color: '#ca8a04', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                                관리자 임명
+                                 관리자 임명
                               </button>
                             )}
                             
@@ -498,11 +597,6 @@ function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
-                    {users.length === 0 && (
-                      <tr>
-                        <td colSpan="6" style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>가입된 회원이 없습니다.</td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
-import { User, Building, ShieldCheck, Edit3, Trash2, FileText, Plus, CheckCircle, Search, Upload, LogOut } from 'lucide-react';
+import { User, Building, ShieldCheck, Edit3, Trash2, FileText, Plus, CheckCircle, Search, Upload, LogOut, Landmark, Calendar, Coins } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
@@ -34,7 +34,16 @@ function MyInfo() {
     is_disabled_company: 0,
     licenses: [],
     is_verified: 0,
-    verification_status: 'NONE'
+    verification_status: 'NONE',
+    performances: []
+  });
+
+  // 실적 추가 입력 폼 상태
+  const [newPerformance, setNewPerformance] = useState({
+    title: '',
+    client: '',
+    amount: '',
+    date: ''
   });
 
   const [passwordData, setPasswordData] = useState({ old_password: '', new_password: '', confirm_password: '' });
@@ -65,11 +74,12 @@ function MyInfo() {
           is_disabled_company: u.is_disabled_company || 0,
           licenses: licenses,
           is_verified: u.is_verified || 0,
-          verification_status: u.verification_status || 'NONE'
+          verification_status: u.verification_status || 'NONE',
+          performances: u.performances || []
         });
       }
     });
-  }, []);
+  }, [user]);
 
   const handleSavePersonal = async () => {
     try {
@@ -89,11 +99,8 @@ function MyInfo() {
     try {
       const res = await api.put('/auth/me/company', companyInfo);
       if (res.data.success) {
-        alert('기업 정보가 갱신되었습니다.');
-        updateUser({ 
-          company_name: companyInfo.company_name,
-          role: companyInfo.is_verified ? 'COMPANY' : 'USER'
-        });
+        alert('기업 정보 및 면허 실적이 갱신되었습니다.');
+        updateUser(res.data.user);
       } else {
         alert('갱신 실패: ' + res.data.message);
       }
@@ -130,6 +137,7 @@ function MyInfo() {
       if (res.data.success) {
         alert(res.data.message);
         setCompanyInfo(prev => ({ ...prev, is_verified: 1 }));
+        updateUser({ is_verified: 1, role: 'COMPANY' });
       } else {
         alert(res.data.message);
       }
@@ -149,6 +157,7 @@ function MyInfo() {
       if (res.data.success) {
         alert(res.data.message);
         setCompanyInfo(prev => ({ ...prev, verification_status: 'PENDING' }));
+        updateUser({ verification_status: 'PENDING' });
       }
     } catch (err) {
       alert('서류 제출 실패');
@@ -192,7 +201,6 @@ function MyInfo() {
   const confirmLicenseSelection = () => {
     const newLicenses = selectedLicenses.map(code => {
       const found = COMMON_LICENSES.find(c => c.code === code);
-      // Keep existing custom names if they were manually added before
       const existing = companyInfo.licenses.find(c => c.code === code);
       return existing ? existing : { code, name: found ? found.name : '알수없는 면허' };
     });
@@ -211,6 +219,64 @@ function MyInfo() {
     l.name.includes(searchLicense) || l.code.includes(searchLicense)
   );
 
+  // -------------------------------------------------------------
+  // 실적 관리 핸들러
+  // -------------------------------------------------------------
+  const handleAddPerformance = (e) => {
+    e.preventDefault();
+    if (!newPerformance.title || !newPerformance.client || !newPerformance.amount || !newPerformance.date) {
+      alert("모든 실적 정보를 정확하게 기입해주세요.");
+      return;
+    }
+    const updatedPerformances = [
+      ...companyInfo.performances,
+      {
+        id: Date.now(),
+        title: newPerformance.title,
+        client: newPerformance.client,
+        amount: parseInt(newPerformance.amount),
+        date: newPerformance.date
+      }
+    ];
+
+    const nextCompanyInfo = {
+      ...companyInfo,
+      performances: updatedPerformances
+    };
+
+    setCompanyInfo(nextCompanyInfo);
+    
+    // DB 저장 API 실행
+    api.put('/auth/me/company', nextCompanyInfo)
+      .then(res => {
+        if (res.data.success) {
+          updateUser(res.data.user);
+          alert("실적이 등록되었습니다. 공고의 자격진단 시 실적 합산 결과에 자동 연동됩니다.");
+          setNewPerformance({ title: '', client: '', amount: '', date: '' });
+        }
+      });
+  };
+
+  const handleRemovePerformance = (perfId) => {
+    if (!window.confirm("정말 이 실적을 삭제하시겠습니까?")) return;
+    const updatedPerformances = companyInfo.performances.filter(p => p.id !== perfId);
+    
+    const nextCompanyInfo = {
+      ...companyInfo,
+      performances: updatedPerformances
+    };
+
+    setCompanyInfo(nextCompanyInfo);
+
+    api.put('/auth/me/company', nextCompanyInfo)
+      .then(res => {
+        if (res.data.success) {
+          updateUser(res.data.user);
+          alert("실적이 삭제되었습니다.");
+        }
+      });
+  };
+
   return (
     <Layout>
       <div className="dashboard-container">
@@ -218,9 +284,11 @@ function MyInfo() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '32px' }}>
           
+          {/* Sidebar Tab Menu */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button onClick={() => setActiveTab('personal')} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: activeTab === 'personal' ? '#dbeafe' : 'transparent', color: activeTab === 'personal' ? '#1e3a8a' : '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', border: 'none', textAlign: 'left', cursor: 'pointer' }}><User size={18} /> 개인 정보 설정</button>
             <button onClick={() => setActiveTab('company')} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: activeTab === 'company' ? '#dbeafe' : 'transparent', color: activeTab === 'company' ? '#1e3a8a' : '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', border: 'none', textAlign: 'left', cursor: 'pointer' }}><Building size={18} /> 기업 정보 및 인증</button>
+            <button onClick={() => setActiveTab('performance')} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: activeTab === 'performance' ? '#dbeafe' : 'transparent', color: activeTab === 'performance' ? '#1e3a8a' : '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', border: 'none', textAlign: 'left', cursor: 'pointer' }}><FileText size={18} /> 자사 실적 관리</button>
             <button onClick={() => setActiveTab('security')} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', backgroundColor: activeTab === 'security' ? '#dbeafe' : 'transparent', color: activeTab === 'security' ? '#1e3a8a' : '#64748b', borderRadius: '8px', fontWeight: 600, fontSize: '14px', border: 'none', textAlign: 'left', cursor: 'pointer' }}><ShieldCheck size={18} /> 보안 및 비밀번호</button>
           </div>
 
@@ -233,9 +301,6 @@ function MyInfo() {
                   <p style={{ fontSize: '13px', color: '#64748b' }}>시스템 알림 및 공고 관리 권한을 위한 개인 정보를 수정할 수 있습니다.</p>
                 </div>
                 <div style={{ padding: '32px 40px', display: 'flex', gap: '40px' }}>
-                  <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: '48px', height: '48px', backgroundColor: '#38bdf8', borderRadius: '8px' }}></div>
-                  </div>
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                       <div>
@@ -370,6 +435,87 @@ function MyInfo() {
                 </div>
                 <div style={{ padding: '24px 40px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end' }}>
                   <button onClick={handleSaveCompany} style={{ height: '40px', padding: '0 24px', backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '14px', color: '#fff', cursor: 'pointer' }}>기업 정보 갱신</button>
+                </div>
+              </div>
+            )}
+
+            {/* 자사 실적 관리 탭 추가 */}
+            {activeTab === 'performance' && (
+              <div className="panel" style={{ padding: 0 }}>
+                <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                  <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>자사 입찰수행 실적 관리</h2>
+                  <p style={{ fontSize: '13px', color: '#64748b' }}>최근 3년 간 당사가 준공 완료한 사업 실적 내역입니다. 공고 입찰자격 요건 충족 판단의 핵심 지표가 됩니다.</p>
+                </div>
+                
+                <div style={{ padding: '32px 40px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                  
+                  {/* 실적 등록 폼 */}
+                  <form onSubmit={handleAddPerformance} style={{ padding: '24px', border: '1px solid #e2e8f0', borderRadius: '8px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '6px' }}><Plus size={16}/> 신규 준공 실적 등록</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '16px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>계약명 (사업명)</label>
+                        <input type="text" value={newPerformance.title} onChange={e => setNewPerformance({...newPerformance, title: e.target.value})} placeholder="예: 2025년 OOO시스템 구축 사업" style={{ width: '100%', height: '40px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', fontSize: '13px', backgroundColor: '#fff' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>발주기관 (고객사)</label>
+                        <input type="text" value={newPerformance.client} onChange={e => setNewPerformance({...newPerformance, client: e.target.value})} placeholder="예: 서울특별시 정보화기획과" style={{ width: '100%', height: '40px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', fontSize: '13px', backgroundColor: '#fff' }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>계약금액 (원 - 숫자만)</label>
+                        <input type="number" value={newPerformance.amount} onChange={e => setNewPerformance({...newPerformance, amount: e.target.value})} placeholder="예: 150000000" style={{ width: '100%', height: '40px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', fontSize: '13px', backgroundColor: '#fff' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '6px' }}>준공년월일</label>
+                        <input type="date" value={newPerformance.date} onChange={e => setNewPerformance({...newPerformance, date: e.target.value})} style={{ width: '100%', height: '40px', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0 12px', fontSize: '13px', backgroundColor: '#fff' }} />
+                      </div>
+                    </div>
+
+                    <button type="submit" style={{ height: '40px', backgroundColor: '#0f172a', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '8px' }}>
+                      <Plus size={16} /> 실적 리스트에 추가
+                    </button>
+                  </form>
+
+                  {/* 실적 리스트 테이블 */}
+                  <div>
+                    <h3 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>보유 실적 목록 ({companyInfo.performances.length}건)</h3>
+                    {companyInfo.performances.length === 0 ? (
+                      <div style={{ padding: '32px', textAlign: 'center', color: '#94a3b8', border: '1px dashed #cbd5e1', borderRadius: '8px' }}>
+                        등록된 준공 실적이 없습니다. 상단 폼에서 실적을 입력하여 추가하십시오.
+                      </div>
+                    ) : (
+                      <div className="table-wrapper" style={{ border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <table style={{ margin: 0 }}>
+                          <thead>
+                            <tr style={{ backgroundColor: '#f8fafc' }}>
+                              <th>계약명</th>
+                              <th>발주처</th>
+                              <th>계약금액</th>
+                              <th>준공일자</th>
+                              <th style={{ textAlign: 'right' }}>관리</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {companyInfo.performances.map(perf => (
+                              <tr key={perf.id}>
+                                <td style={{ fontWeight: 700 }}>{perf.title}</td>
+                                <td><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Landmark size={14} color="#64748b" /> {perf.client}</span></td>
+                                <td style={{ fontWeight: 600, color: '#1e3a8a' }}><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Coins size={14} color="#64748b"/> ₩ {parseInt(perf.amount).toLocaleString()}원</span></td>
+                                <td><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Calendar size={14} color="#64748b"/> {perf.date}</span></td>
+                                <td style={{ textAlign: 'right' }}>
+                                  <button onClick={() => handleRemovePerformance(perf.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }} title="삭제"><Trash2 size={16} color="#ef4444" /></button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               </div>
             )}
