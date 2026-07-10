@@ -14,13 +14,15 @@ import InterestConditions from './pages/InterestConditions';
 import MyInfo from './pages/MyInfo';
 import Notifications from './pages/Notifications';
 import SignUp from './pages/SignUp';
+import SignUpChoice from './pages/SignUpChoice';
 import PasswordReset from './pages/PasswordReset';
+import PublicSupport from './pages/PublicSupport';
 import CalendarPage from './pages/CalendarPage';
-import OAuthCallback from './pages/OAuthCallback';
 import SpecificationList from './pages/SpecificationList';
 import BidResultList from './pages/BidResultList';
 import ProposalSupport from './pages/ProposalSupport';
 import InterestNotices from './pages/InterestNotices';
+import SupportCenter from './pages/SupportCenter';
 
 function App() {
   return (
@@ -30,9 +32,11 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signup" element={<SignUpChoice />} />
+          <Route path="/signup/personal" element={<SignUp signupType="PERSONAL" />} />
+          <Route path="/signup/company" element={<SignUp signupType="COMPANY" />} />
           <Route path="/reset-password" element={<PasswordReset />} />
-          <Route path="/oauth/callback/:provider" element={<OAuthCallback />} />
+          <Route path="/support/public" element={<PublicSupport />} />
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
@@ -46,6 +50,7 @@ function App() {
           <Route path="/results" element={<ProtectedRoute><BidResultList /></ProtectedRoute>} />
           <Route path="/proposal" element={<ProtectedRoute><ProposalSupport /></ProtectedRoute>} />
           <Route path="/interests" element={<ProtectedRoute><InterestNotices /></ProtectedRoute>} />
+          <Route path="/support" element={<ProtectedRoute><SupportCenter /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/logs" element={<ProtectedRoute requireAdmin={true}><AdminLogs /></ProtectedRoute>} />
         </Routes>

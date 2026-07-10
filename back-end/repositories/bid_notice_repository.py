@@ -19,8 +19,17 @@ class BidNoticeRepository:
         if filters.get("keyword"):
             search_str = filters['keyword'].replace(" ", "")
             keyword = f"%{search_str}%"
-            where.append("(REPLACE(title, ' ', '') LIKE %s OR REPLACE(match_keywords, ' ', '') LIKE %s)")
-            params.extend([keyword, keyword])
+            if filters.get("search_mode") == "ai":
+                where.append("""(
+                    REPLACE(title, ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(match_keywords, ''), ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(product_name, ''), ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(industry_name, ''), ' ', '') LIKE %s
+                )""")
+                params.extend([keyword] * 4)
+            else:
+                where.append("(REPLACE(title, ' ', '') LIKE %s OR REPLACE(match_keywords, ' ', '') LIKE %s)")
+                params.extend([keyword, keyword])
         if filters.get("region"):
             keyword = f"%{filters['region']}%"
             where.append("(region_name LIKE %s OR region LIKE %s OR notice_org_name LIKE %s OR demand_org_name LIKE %s)")
@@ -58,8 +67,34 @@ class BidNoticeRepository:
             except ValueError:
                 pass
 
+        if filters.get("period_days"):
+            try:
+                period_days = max(1, min(int(filters["period_days"]), 3650))
+                where.append("bid_notices.posted_at >= DATE_SUB(NOW(), INTERVAL %s DAY)")
+                params.append(period_days)
+            except ValueError:
+                pass
+
         limit = int(filters.get("limit") or 50)
         offset = int(filters.get("offset") or 0)
+
+        order_by = "bid_notices.posted_at DESC, bid_notices.id DESC"
+        if (
+            filters.get("sort") == "relevance"
+            and filters.get("keyword")
+        ):
+            relevance_keyword = f"%{filters['keyword'].replace(' ', '')}%"
+            order_by = """
+                (
+                    CASE WHEN REPLACE(bid_notices.title, ' ', '') LIKE %s THEN 100 ELSE 0 END
+                    + CASE WHEN REPLACE(COALESCE(bid_notices.match_keywords, ''), ' ', '') LIKE %s THEN 40 ELSE 0 END
+                    + CASE WHEN REPLACE(COALESCE(bid_notices.product_name, ''), ' ', '') LIKE %s THEN 30 ELSE 0 END
+                    + CASE WHEN REPLACE(COALESCE(bid_notices.industry_name, ''), ' ', '') LIKE %s THEN 20 ELSE 0 END
+                ) DESC,
+                bid_notices.posted_at DESC,
+                bid_notices.id DESC
+            """
+            params.extend([relevance_keyword] * 4)
 
         sql = f"""
             SELECT
@@ -96,7 +131,7 @@ class BidNoticeRepository:
               ON product_categories.source_type = bid_notices.product_category_source_type
              AND product_categories.product_class_no = bid_notices.product_class_no
             WHERE {" AND ".join(where)}
-            ORDER BY bid_notices.posted_at DESC, bid_notices.id DESC
+            ORDER BY {order_by}
             LIMIT %s OFFSET %s
         """
         params.extend([limit, offset])
@@ -119,8 +154,17 @@ class BidNoticeRepository:
         if filters.get("keyword"):
             search_str = filters['keyword'].replace(" ", "")
             keyword = f"%{search_str}%"
-            where.append("(REPLACE(title, ' ', '') LIKE %s OR REPLACE(match_keywords, ' ', '') LIKE %s)")
-            params.extend([keyword, keyword])
+            if filters.get("search_mode") == "ai":
+                where.append("""(
+                    REPLACE(title, ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(match_keywords, ''), ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(product_name, ''), ' ', '') LIKE %s
+                    OR REPLACE(COALESCE(industry_name, ''), ' ', '') LIKE %s
+                )""")
+                params.extend([keyword] * 4)
+            else:
+                where.append("(REPLACE(title, ' ', '') LIKE %s OR REPLACE(match_keywords, ' ', '') LIKE %s)")
+                params.extend([keyword, keyword])
         if filters.get("region"):
             keyword = f"%{filters['region']}%"
             where.append("(region_name LIKE %s OR region LIKE %s OR notice_org_name LIKE %s OR demand_org_name LIKE %s)")
@@ -155,6 +199,14 @@ class BidNoticeRepository:
                 max_b = int(filters["max_budget"])
                 where.append("estimated_price <= %s")
                 params.append(max_b)
+            except ValueError:
+                pass
+
+        if filters.get("period_days"):
+            try:
+                period_days = max(1, min(int(filters["period_days"]), 3650))
+                where.append("bid_notices.posted_at >= DATE_SUB(NOW(), INTERVAL %s DAY)")
+                params.append(period_days)
             except ValueError:
                 pass
 

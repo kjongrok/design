@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Badge from '../components/UI/Badge';
-import { Download, ChevronDown, ChevronLeft, ChevronRight, Search, Filter, RotateCcw, Heart } from 'lucide-react';
+import { Download, ChevronDown, ChevronLeft, ChevronRight, Search, Filter, RotateCcw, Heart, Sparkles } from 'lucide-react';
 import api from '../utils/api';
 
 function NoticeList() {
@@ -15,6 +15,9 @@ function NoticeList() {
   const [filterBudget, setFilterBudget] = useState('ALL');
   const [filterRegion, setFilterRegion] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState('ALL');
+  const [searchMode, setSearchMode] = useState('general');
+  const [sortOrder, setSortOrder] = useState('latest');
+  const [periodDays, setPeriodDays] = useState('ALL');
 
   // 페이징 상태
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,13 +42,19 @@ function NoticeList() {
   };
 
 
-  const fetchNotices = (page = currentPage) => {
+  const fetchNotices = (page = currentPage, overrides = {}) => {
     let params = new URLSearchParams();
+    const activeSearchMode = overrides.searchMode || searchMode;
+    const activeSortOrder = overrides.sort || sortOrder;
+    const activePeriodDays = overrides.periodDays || periodDays;
     
     if (filterKeyword) params.append('keyword', filterKeyword);
     if (filterStatus !== 'ALL') params.append('status', filterStatus);
     if (filterRegion !== 'ALL') params.append('region', filterRegion);
     if (filterCategory !== 'ALL') params.append('bizType', filterCategory);
+    params.append('searchMode', activeSearchMode);
+    params.append('sort', activeSearchMode === 'ai' ? 'relevance' : activeSortOrder);
+    if (activePeriodDays !== 'ALL') params.append('periodDays', activePeriodDays);
     
     // 예산 범위 파싱
     if (filterBudget === 'U_1') {
@@ -127,6 +136,9 @@ function NoticeList() {
     setFilterBudget('ALL');
     setFilterRegion('ALL');
     setFilterCategory('ALL');
+    setSearchMode('general');
+    setSortOrder('latest');
+    setPeriodDays('ALL');
     setCurrentPage(1);
     
     let params = new URLSearchParams();
@@ -163,6 +175,23 @@ function NoticeList() {
   useEffect(() => {
     fetchNotices(currentPage);
   }, [currentPage]); // 페이지 변경 시 조회
+
+  const toggleInterest = async (event, notice) => {
+    event.stopPropagation();
+    try {
+      const response = await api.post(`/bid-notices/${notice.id}/interest`);
+      if (response.data?.success) {
+        const isInterest = response.data.is_interest;
+        setNotices(current => current.map(item =>
+          item.id === notice.id ? { ...item, is_interest: isInterest } : item
+        ));
+        alert(isInterest ? '관심 공고에 등록되었습니다.' : '관심 공고에서 해제되었습니다.');
+      }
+    } catch (error) {
+      console.error('관심 공고 처리 실패:', error);
+      alert('관심 공고 처리 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <Layout>
@@ -205,18 +234,80 @@ function NoticeList() {
             </div>
             <button 
               onClick={() => {
-                if (currentPage === 1) fetchNotices(1);
+                setSearchMode('general');
+                if (currentPage === 1) fetchNotices(1, { searchMode: 'general' });
                 else setCurrentPage(1);
               }}
-              style={{ backgroundColor: '#2563eb', color: '#fff', padding: '0 32px', height: '48px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}
-              onMouseOver={(e) => e.target.style.backgroundColor = '#1d4ed8'}
-              onMouseOut={(e) => e.target.style.backgroundColor = '#2563eb'}
+              style={{ backgroundColor: searchMode === 'general' ? '#2563eb' : '#e2e8f0', color: searchMode === 'general' ? '#fff' : '#334155', padding: '0 26px', height: '48px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}
+              onMouseOver={(e) => {
+                if (searchMode === 'general') e.currentTarget.style.backgroundColor = '#1d4ed8';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = searchMode === 'general' ? '#2563eb' : '#e2e8f0';
+              }}
             >
               검색
             </button>
+            <button
+            onClick={() => {
+              setSearchMode('ai');
+              setSortOrder('relevance');
+              setCurrentPage(1);
+              fetchNotices(1, { searchMode: 'ai', sort: 'relevance' });
+            }}
+            style={{ display: 'flex', alignItems: 'center', gap: '7px', background: searchMode === 'ai' ? 'linear-gradient(135deg, #7c3aed, #2563eb)' : '#f5f3ff', color: searchMode === 'ai' ? '#fff' : '#6d28d9', padding: '0 22px', height: '48px', borderRadius: '8px', fontWeight: 700, fontSize: '15px', border: searchMode === 'ai' ? 'none' : '1px solid #ddd6fe', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            title="공고명, 품목, 업종, 키워드를 종합해 관련도순으로 검색합니다."
+          >
+            <Sparkles size={17} /> AI 검색
+          </button>
           </div>
 
           <div style={{ height: '1px', backgroundColor: '#f1f5f9' }} />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}>
+              <span style={{ width: '42px', color: '#334155', fontWeight: 700 }}>정렬</span>
+              {[{ value: 'relevance', label: '관련도순' }, { value: 'latest', label: '최신순' }].map(option => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    const nextMode = option.value === 'relevance' ? 'ai' : 'general';
+                    setSortOrder(option.value);
+                    setSearchMode(nextMode);
+                    setCurrentPage(1);
+                    fetchNotices(1, { sort: option.value, searchMode: nextMode });
+                  }}
+                  style={{ padding: 0, border: 0, background: 'transparent', color: sortOrder === option.value ? '#10b981' : '#64748b', fontWeight: sortOrder === option.value ? 700 : 500, cursor: 'pointer' }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap' }}>
+              <span style={{ width: '42px', color: '#334155', fontWeight: 700 }}>기간</span>
+              {[
+                { value: 'ALL', label: '전체' },
+                { value: '1', label: '1일' },
+                { value: '7', label: '1주' },
+                { value: '30', label: '1개월' },
+                { value: '90', label: '3개월' },
+                { value: '180', label: '6개월' },
+                { value: '365', label: '1년' },
+              ].map(option => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setPeriodDays(option.value);
+                    setCurrentPage(1);
+                    fetchNotices(1, { periodDays: option.value });
+                  }}
+                  style={{ padding: 0, border: 0, background: 'transparent', color: periodDays === option.value ? '#10b981' : '#64748b', fontWeight: periodDays === option.value ? 700 : 500, cursor: 'pointer' }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Bottom Advanced Filters */}
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -306,6 +397,7 @@ function NoticeList() {
               <thead>
                 <tr>
                   <th>일치도</th>
+                  <th style={{ width: '56px', textAlign: 'center' }}>관심</th>
                   <th>공고명</th>
                   <th>기관명</th>
                   <th>예산(원)</th>
@@ -316,13 +408,31 @@ function NoticeList() {
               </thead>
               <tbody>
                 {notices.map((n, i) => (
-                  <tr key={i} onClick={() => navigate(`/notice/${n.id}`)} style={{ cursor: 'pointer' }} className="hover-row">
+                  <tr key={n.id || i} onClick={() => navigate(`/notice/${n.id}`)} style={{ cursor: 'pointer' }} className="hover-row">
                     <td><Badge variant="info">{n.match}</Badge></td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button
+                        type="button"
+                        onClick={(event) => toggleInterest(event, n)}
+                        aria-label={n.is_interest ? '관심 공고 해제' : '관심 공고 등록'}
+                        title={n.is_interest ? '관심 공고 해제' : '관심 공고 등록'}
+                        style={{
+                          width: '34px',
+                          height: '34px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '50%',
+                          color: n.is_interest ? '#ef4444' : '#94a3b8',
+                          backgroundColor: n.is_interest ? '#fef2f2' : 'transparent',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        <Heart size={19} fill={n.is_interest ? '#ef4444' : 'none'} strokeWidth={2} />
+                      </button>
+                    </td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        {n.is_interest && (
-                          <Heart size={15} fill="#ef4444" color="#ef4444" style={{ flexShrink: 0 }} />
-                        )}
                         <span style={{ fontWeight: 700, color: '#0f172a' }}>{n.name}</span>
                       </div>
                       <div style={{ fontSize: '12px', color: '#64748b' }}>{n.num}</div>

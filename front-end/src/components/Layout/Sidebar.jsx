@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Building2, LayoutDashboard, List, SlidersHorizontal, Bell, User, Settings, LogOut, Calendar, ChevronDown, ChevronUp, FileSpreadsheet, Trophy, FileJson, Sparkles, Heart } from 'lucide-react';
+import { Building2, LayoutDashboard, List, SlidersHorizontal, Bell, User, Settings, LogOut, Calendar, ChevronDown, ChevronUp, FileSpreadsheet, Trophy, FileJson, Sparkles, Heart, CircleHelp } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -8,6 +8,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
   const [isNoticeMenuOpen, setIsNoticeMenuOpen] = useState(true);
+  const canUseCompanyFeatures = user?.role === 'COMPANY' || user?.role === 'ADMIN';
 
   const isActive = (path) => location.pathname === path;
   const isSubActive = (path) => location.pathname.startsWith(path);
@@ -77,31 +78,44 @@ const Sidebar = () => {
           )}
         </div>
 
-        <button className={`nav-item ${isActive('/proposal') ? 'active' : ''}`} onClick={() => navigate('/proposal')}>
-          <Sparkles size={20} color="#c026d3" />
-          <span style={{ fontWeight: isActive('/proposal') ? 700 : 500 }}>입찰제안서 지원</span>
-        </button>
+        {canUseCompanyFeatures && (
+          <button className={`nav-item ${isActive('/proposal') ? 'active' : ''}`} onClick={() => navigate('/proposal')}>
+            <Sparkles size={20} color="#c026d3" />
+            <span style={{ fontWeight: isActive('/proposal') ? 700 : 500 }}>입찰제안서 지원</span>
+          </button>
+        )}
 
         <button className={`nav-item ${isActive('/interests') ? 'active' : ''}`} onClick={() => navigate('/interests')}>
           <Heart size={20} color="#ef4444" />
           <span>관심 공고함</span>
         </button>
 
-        <button className={`nav-item ${isActive('/conditions') ? 'active' : ''}`} onClick={() => navigate('/conditions')}>
-          <SlidersHorizontal size={20} />
-          <span>관심 조건 관리</span>
-        </button>
+        {canUseCompanyFeatures && (
+          <button className={`nav-item ${isActive('/conditions') ? 'active' : ''}`} onClick={() => navigate('/conditions')}>
+            <SlidersHorizontal size={20} />
+            <span>관심 조건 관리</span>
+          </button>
+        )}
         
-        <button className={`nav-item ${isActive('/calendar') ? 'active' : ''}`} onClick={() => navigate('/calendar')}>
-          <Calendar size={20} />
-          <span>전체 캘린더</span>
-        </button>
+        {canUseCompanyFeatures && (
+          <button className={`nav-item ${isActive('/calendar') ? 'active' : ''}`} onClick={() => navigate('/calendar')}>
+            <Calendar size={20} />
+            <span>전체 캘린더</span>
+          </button>
+        )}
         
-        <button className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
-          <Bell size={20} />
-          <span>알림 이력</span>
-        </button>
+        {canUseCompanyFeatures && (
+          <button className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
+            <Bell size={20} />
+            <span>알림 이력</span>
+          </button>
+        )}
         
+        <button className={`nav-item ${isActive('/support') ? 'active' : ''}`} onClick={() => navigate('/support')}>
+          <CircleHelp size={20} />
+          <span>고객센터</span>
+        </button>
+
         <button className={`nav-item ${isActive('/profile') ? 'active' : ''}`} onClick={() => navigate('/profile')}>
           <User size={20} />
           <span>내 정보</span>

@@ -37,6 +37,19 @@ class AuthService:
         if not user.get('password_hash') or not check_password_hash(user['password_hash'], password):
             return {"success": False, "message": "이메일 또는 비밀번호가 올바르지 않습니다."}, 401
 
+        if user.get('status') in ('blocked', 'dormant'):
+            account_status = user.get('status')
+            message = (
+                "휴면 계정입니다. 고객센터로 문의해 주세요."
+                if account_status == 'dormant'
+                else "정지 상태의 계정입니다. 고객센터로 문의해 주세요."
+            )
+            return {
+                "success": False,
+                "message": message,
+                "account_status": account_status
+            }, 403
+
         if user.get('status') == 'blocked':
             return {"success": False, "message": "정지된 계정입니다. 관리자에게 문의하세요."}, 403
 

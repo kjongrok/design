@@ -4,6 +4,7 @@ import { Search, Bell } from 'lucide-react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../utils/api';
+import Footer from './Footer';
 
 const Layout = ({ children }) => {
   const { user, login } = useContext(AuthContext);
@@ -15,16 +16,17 @@ const Layout = ({ children }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const needsEmailUpdate = user?.email?.endsWith('@no-email.com');
+  const canReceiveMatchNotifications = user?.role === 'COMPANY' || user?.role === 'ADMIN';
 
   useEffect(() => {
-    if (user) {
+    if (canReceiveMatchNotifications) {
       api.get('/notifications?limit=1').then(res => {
         if (res.data.success) {
           setUnreadCount(res.data.unreadCount || 0);
         }
       }).catch(err => console.error(err));
     }
-  }, [user]);
+  }, [canReceiveMatchNotifications]);
 
   let pageTitle = "대시보드";
   if (location.pathname === '/notices') pageTitle = "공고 목록";
@@ -34,6 +36,8 @@ const Layout = ({ children }) => {
   else if (location.pathname === '/conditions') pageTitle = "관심 조건 관리";
   else if (location.pathname === '/admin') pageTitle = "관리자 설정";
   else if (location.pathname === '/profile') pageTitle = "내 정보";
+
+  if (location.pathname === '/support') pageTitle = "고객센터";
 
   const handleUpdateEmail = async () => {
     if (!emailInput.includes('@')) {
@@ -65,8 +69,7 @@ const Layout = ({ children }) => {
           <div style={{ backgroundColor: '#fff', borderRadius: '16px', padding: '40px', width: '100%', maxWidth: '440px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>수신용 이메일 등록</h2>
             <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px', lineHeight: 1.5 }}>
-              카카오 로그인 시 이메일 제공이 제한되어 맞춤 공고를 전송할 수 없습니다. 
-              <br/>공고 알림을 받을 <strong>실제 이메일 주소</strong>를 필수로 등록해 주세요.
+              공고 알림을 받을 <strong>실제 이메일 주소</strong>를 필수로 등록해 주세요.
             </p>
             <input 
               type="email" 
@@ -93,14 +96,16 @@ const Layout = ({ children }) => {
             <div className="topbar-title">{pageTitle}</div>
           </div>
           <div className="topbar-right">
-            <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/notifications')}>
-              <Bell size={20} color="#64748b" />
-              {unreadCount > 0 && (
-                <div style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 'bold', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {unreadCount > 99 ? '99+' : unreadCount}
-                </div>
-              )}
-            </div>
+            {canReceiveMatchNotifications && (
+              <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/notifications')}>
+                <Bell size={20} color="#64748b" />
+                {unreadCount > 0 && (
+                  <div style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: '#ef4444', color: 'white', fontSize: '10px', fontWeight: 'bold', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="user-profile">
               <div className="user-info">
                 <span className="user-name">{user?.name || '회원'}님</span>
@@ -112,6 +117,7 @@ const Layout = ({ children }) => {
           </div>
         </header>
         {children}
+        <Footer />
       </main>
     </div>
   );

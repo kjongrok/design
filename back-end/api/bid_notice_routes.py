@@ -20,6 +20,9 @@ def list_bid_notices():
         "status": request.args.get("status"),
         "min_budget": request.args.get("minBudget"),
         "max_budget": request.args.get("maxBudget"),
+        "sort": request.args.get("sort"),
+        "period_days": request.args.get("periodDays"),
+        "search_mode": request.args.get("searchMode"),
         "limit": request.args.get("limit"),
         "offset": request.args.get("offset"),
     }

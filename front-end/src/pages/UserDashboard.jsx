@@ -13,7 +13,7 @@ function UserDashboard() {
   const [allNotices, setAllNotices] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  
+
   // Calendar state
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -50,7 +50,7 @@ function UserDashboard() {
             keywords: item.matched_keywords ? item.matched_keywords.split(',') : []
           }));
           setAllNotices(mapped);
-          
+
           // 상위 5개 최근 매칭 (목록용)
           setNotices(mapped.slice(0, 5));
         } else {
@@ -83,8 +83,8 @@ function UserDashboard() {
 
   // Upcoming events
   const today = new Date();
-  today.setHours(0,0,0,0);
-  
+  today.setHours(0, 0, 0, 0);
+
   // 선택된 달의 공고만 필터링
   const upcomingEvents = allNotices
     .filter(n => n.date && n.date.getFullYear() === year && n.date.getMonth() === month)
@@ -110,7 +110,7 @@ function UserDashboard() {
   return (
     <Layout>
       <div className="dashboard-container">
-        
+
         <div className="welcome-section">
           <h1 className="welcome-title">안녕하세요, {user?.name || '회원'}님!</h1>
           <p className="welcome-subtitle">오늘의 공고 알림 현황을 확인해보세요.</p>
@@ -124,19 +124,19 @@ function UserDashboard() {
             <div className="metric-value">{closingTodayCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
-            <div className="metric-icon" style={{backgroundColor: '#fff7ed', color: '#ea580c'}}><Target size={20} /></div>
+            <div className="metric-icon" style={{ backgroundColor: '#fff7ed', color: '#ea580c' }}><Target size={20} /></div>
             <div className="metric-trend info">진행 중 공고: {activeCount}건</div>
             <div className="metric-label">전체 매칭 공고</div>
             <div className="metric-value">{totalMatchCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
-            <div className="metric-icon" style={{backgroundColor: '#fefce8', color: '#ca8a04'}}><Clock size={20} /></div>
+            <div className="metric-icon" style={{ backgroundColor: '#fefce8', color: '#ca8a04' }}><Clock size={20} /></div>
             <div className="metric-trend warning">3일 이내 마감</div>
             <div className="metric-label">마감 임박 공고</div>
             <div className="metric-value">{closingSoonCount}<span className="metric-unit">건</span></div>
           </div>
           <div className="metric-card">
-            <div className="metric-icon" style={{backgroundColor: '#eff6ff', color: '#2563eb'}}><MailCheck size={20} /></div>
+            <div className="metric-icon" style={{ backgroundColor: '#eff6ff', color: '#2563eb' }}><MailCheck size={20} /></div>
             <div className="metric-trend danger">{unreadCount > 0 ? '새 알림이 있습니다' : '모두 확인 완료'}</div>
             <div className="metric-label">미확인 알림</div>
             <div className="metric-value">{unreadCount}<span className="metric-unit">건</span></div>
@@ -145,7 +145,7 @@ function UserDashboard() {
 
         <div className="main-grid">
           {/* Left Column */}
-          <div style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="panel">
               <div className="panel-header">
                 <div className="panel-title">최근 매칭 공고</div>
@@ -166,9 +166,9 @@ function UserDashboard() {
                     {notices.map((n, i) => (
                       <tr key={i} onClick={() => navigate('/notice/' + n.id, { state: { matchScore: n.match, matchKeywords: n.keywords } })} style={{ cursor: 'pointer' }} className="hoverable-row">
                         <td><Badge variant="info">{n.match}</Badge></td>
-                        <td style={{fontWeight: 700}}>{n.name}</td>
-                        <td style={{color: 'var(--color-text-sub)'}}>{n.org}</td>
-                        <td style={{color: n.date && n.date < new Date() ? 'var(--color-danger)' : 'var(--color-text-main)', fontWeight: n.date && n.date < new Date() ? 600 : 400}}>{n.dateStr}</td>
+                        <td style={{ fontWeight: 700 }}>{n.name}</td>
+                        <td style={{ color: 'var(--color-text-sub)' }}>{n.org}</td>
+                        <td style={{ color: n.date && n.date < new Date() ? 'var(--color-danger)' : 'var(--color-text-main)', fontWeight: n.date && n.date < new Date() ? 600 : 400 }}>{n.dateStr}</td>
                         <td>{n.budget}</td>
                       </tr>
                     ))}
@@ -189,15 +189,15 @@ function UserDashboard() {
                       <div className="noti-icon"><MailCheck size={20} /></div>
                       <div className="noti-content">
                         <strong>{n.title}</strong>
-                        <span style={{color: n.is_read ? '#94a3b8' : '#334155'}}>{n.message}</span>
-                        <span style={{fontSize: '11px', marginTop: '4px'}}>{new Date(n.created_at).toLocaleString()}</span>
+                        <span style={{ color: n.is_read ? '#94a3b8' : '#334155' }}>{n.message}</span>
+                        <span style={{ fontSize: '11px', marginTop: '4px' }}>{new Date(n.created_at).toLocaleString()}</span>
                       </div>
                     </div>
                     {!n.is_read && <Badge variant="danger">New</Badge>}
                   </div>
-                )) : <div style={{padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px'}}>최근 알림이 없습니다.</div>}
+                )) : <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>최근 알림이 없습니다.</div>}
               </div>
-              <button className="more-btn" onClick={() => navigate('/notifications')}>전체 알림 보기 <ChevronRight size={14} style={{display:'inline', verticalAlign:'middle'}} /></button>
+              <button className="more-btn" onClick={() => navigate('/notifications')}>전체 알림 보기 <ChevronRight size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></button>
             </div>
           </div>
 
@@ -209,32 +209,32 @@ function UserDashboard() {
             </div>
             <div className="calendar-container">
               <div className="calendar-header">
-                <button onClick={handlePrevMonth} style={{background:'none', border:'none', cursor:'pointer'}}><ChevronLeft size={18} /></button>
-                <span style={{fontWeight: 700}}>{year}년 {month + 1}월</span>
-                <button onClick={handleNextMonth} style={{background:'none', border:'none', cursor:'pointer'}}><ChevronRight size={18} /></button>
+                <button onClick={handlePrevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><ChevronLeft size={18} /></button>
+                <span style={{ fontWeight: 700 }}>{year}년 {month + 1}월</span>
+                <button onClick={handleNextMonth} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><ChevronRight size={18} /></button>
               </div>
               <div className="calendar-grid">
-                {['일','월','화','수','목','금','토'].map(d => <div key={d} className="calendar-day-name">{d}</div>)}
-                
+                {['일', '월', '화', '수', '목', '금', '토'].map(d => <div key={d} className="calendar-day-name">{d}</div>)}
+
                 {/* Previous month padding */}
                 {[...Array(firstDayOfMonth)].map((_, i) => {
                   const d = daysInPrevMonth - firstDayOfMonth + i + 1;
                   return <div key={`p${i}`} className="calendar-cell muted">{d}</div>;
                 })}
-                
+
                 {/* Current month days */}
                 {[...Array(daysInMonth)].map((_, i) => {
                   const day = i + 1;
                   const currentCellDate = new Date(year, month, day);
-                  
+
                   // 해당 일자에 마감인 공고 찾기
-                  const noticesOnThisDay = allNotices.filter(n => 
-                    n.date && 
-                    n.date.getFullYear() === year && 
-                    n.date.getMonth() === month && 
+                  const noticesOnThisDay = allNotices.filter(n =>
+                    n.date &&
+                    n.date.getFullYear() === year &&
+                    n.date.getMonth() === month &&
                     n.date.getDate() === day
                   );
-                  
+
                   let className = "calendar-cell";
                   if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
                     className += " active-blue"; // 오늘 표시
@@ -242,7 +242,7 @@ function UserDashboard() {
                     // 마감일이 있으면 강조 표시
                     className += " active-orange";
                   }
-                  
+
                   return (
                     <div key={day} className={className}>
                       {day}
@@ -254,37 +254,28 @@ function UserDashboard() {
 
               <div className="calendar-events">
                 {upcomingEvents.length > 0 ? upcomingEvents.map((evt, idx) => (
-                  <div className="event-item" key={idx} onClick={() => navigate('/notice/' + evt.id)} style={{cursor: 'pointer'}}>
+                  <div className="event-item" key={idx} onClick={() => navigate('/notice/' + evt.id)} style={{ cursor: 'pointer' }}>
                     <div className="event-date">
-                      {String(evt.date.getMonth() + 1).padStart(2, '0')}.{String(evt.date.getDate()).padStart(2, '0')}<br/>
-                      ({['일','월','화','수','목','금','토'][evt.date.getDay()]})
+                      {String(evt.date.getMonth() + 1).padStart(2, '0')}.{String(evt.date.getDate()).padStart(2, '0')}<br />
+                      ({['일', '월', '화', '수', '목', '금', '토'][evt.date.getDay()]})
                     </div>
                     <div className="event-info">
                       <div className="event-title">{evt.name}</div>
                       <div className="event-org">{evt.org}</div>
                     </div>
-                    <div className={`event-badge ${getDDay(evt.date) === 'D-Day' || parseInt(getDDay(evt.date).replace('D-','')) <= 3 ? 'danger' : 'warning'}`}>
+                    <div className={`event-badge ${getDDay(evt.date) === 'D-Day' || parseInt(getDDay(evt.date).replace('D-', '')) <= 3 ? 'danger' : 'warning'}`}>
                       {getDDay(evt.date)}
                     </div>
                   </div>
                 )) : (
-                  <div style={{padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px'}}>예정된 마감 공고가 없습니다.</div>
+                  <div style={{ padding: '20px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>예정된 마감 공고가 없습니다.</div>
                 )}
               </div>
-              
-              <div style={{textAlign:'center', marginTop:'16px'}}>
-                <button className="more-btn" onClick={() => navigate('/calendar')}>더 보기 <ChevronDown size={14} style={{display:'inline', verticalAlign:'middle'}} /></button>
+
+              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <button className="more-btn" onClick={() => navigate('/calendar')}>더 보기 <ChevronDown size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></button>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="footer">
-          <div>© 2025 나라장터 공고 알림 서비스. All rights reserved.</div>
-          <div className="footer-links">
-            <a href="#">이용약관</a>
-            <a href="#">개인정보처리방침</a>
-            <a href="#">고객센터</a>
           </div>
         </div>
 

@@ -24,7 +24,85 @@ try {
 // 1. 시연용 가상 데이터베이스 초기화 및 데이터 시딩 (Seeding)
 // -------------------------------------------------------------
 const seedMockDatabase = () => {
-  if (localStorage.getItem('mock_init_v2')) return;
+  const generalMember = {
+    id: 5,
+    email: 'member@bidmatch.com',
+    name: '이민준',
+    role: 'USER',
+    phone: '010-2468-1357',
+    company_name: '',
+    business_registration_no: '',
+    business_type: '',
+    is_youth_company: 0,
+    is_woman_company: 0,
+    is_disabled_company: 0,
+    license_codes: '',
+    license_names: '',
+    is_verified: 0,
+    verification_status: 'NONE',
+    created_at: '2026-07-09T10:00:00Z',
+    status: 'active',
+    performances: []
+  };
+
+  const restrictedMembers = [
+    {
+      id: 6,
+      email: 'blocked@bidmatch.com',
+      name: '정지 테스트',
+      role: 'USER',
+      phone: '010-1111-2222',
+      company_name: '',
+      business_registration_no: '',
+      business_type: '',
+      is_youth_company: 0,
+      is_woman_company: 0,
+      is_disabled_company: 0,
+      license_codes: '',
+      license_names: '',
+      is_verified: 0,
+      verification_status: 'NONE',
+      created_at: '2026-07-09T11:00:00Z',
+      status: 'blocked',
+      performances: []
+    },
+    {
+      id: 7,
+      email: 'dormant@bidmatch.com',
+      name: '휴면 테스트',
+      role: 'USER',
+      phone: '010-3333-4444',
+      company_name: '',
+      business_registration_no: '',
+      business_type: '',
+      is_youth_company: 0,
+      is_woman_company: 0,
+      is_disabled_company: 0,
+      license_codes: '',
+      license_names: '',
+      is_verified: 0,
+      verification_status: 'NONE',
+      created_at: '2026-07-09T12:00:00Z',
+      status: 'dormant',
+      performances: []
+    }
+  ];
+
+  if (localStorage.getItem('mock_init_v2')) {
+    const savedUsers = JSON.parse(localStorage.getItem('mock_users') || '[]');
+    const requiredUsers = [generalMember, ...restrictedMembers];
+    let changed = false;
+    requiredUsers.forEach(requiredUser => {
+      if (!savedUsers.some(user => user.email === requiredUser.email)) {
+        savedUsers.push(requiredUser);
+        changed = true;
+      }
+    });
+    if (changed) {
+      localStorage.setItem('mock_users', JSON.stringify(savedUsers));
+    }
+    return;
+  }
 
   const defaultUser = {
     id: 2,
@@ -66,6 +144,8 @@ const seedMockDatabase = () => {
   };
 
   const otherUsers = [
+    generalMember,
+    ...restrictedMembers,
     {
       id: 3,
       email: 'hong@kildong.com',
@@ -545,7 +625,21 @@ const mockAdapter = async (config) => {
       const { email } = JSON.parse(config.data || '{}');
       const users = getMockData('mock_users');
       const user = users.find(u => u.email === email);
-      if (user) {
+      if (user?.status === 'blocked') {
+        status = 403;
+        responseData = {
+          success: false,
+          account_status: 'blocked',
+          message: '현재 계정은 정지 상태로 로그인이 제한되었습니다. 고객센터로 문의해 주세요.',
+        };
+      } else if (user?.status === 'dormant') {
+        status = 403;
+        responseData = {
+          success: false,
+          account_status: 'dormant',
+          message: '현재 계정은 휴면 상태로 로그인이 제한되었습니다. 휴면 해제 문의를 접수해 주세요.',
+        };
+      } else if (user) {
         responseData = { success: true, token: `${email}_token`, user };
       } else {
         status = 400;
@@ -553,7 +647,7 @@ const mockAdapter = async (config) => {
       }
     } 
     else if (isMatch('/auth/signup') && method === 'post') {
-      const { email, password, name } = JSON.parse(config.data || '{}');
+      const { email, name, company_name, business_registration_no, company, business_verification_status } = JSON.parse(config.data || '{}');
       const users = getMockData('mock_users');
       if (users.find(u => u.email === email)) {
         status = 400;
@@ -565,12 +659,23 @@ const mockAdapter = async (config) => {
           name,
           role: 'USER',
           phone: '',
-          company_name: '',
-          business_registration_no: '',
+          company_name: company_name || '',
+          business_registration_no: business_registration_no || '',
+          business_type: company?.businessStatus || '',
+          industry: company?.industry || '',
+          address: company?.address || '',
+          ceo_name: company?.ceoName || '',
+          representative_phone: company?.representativePhone || '',
+          company_phone: company?.phone || '',
+          is_small_business: company?.isSmallBusiness === '있음' ? 1 : 0,
+          is_youth_company: company?.preferredPolicyTypes?.includes('청년') ? 1 : 0,
+          is_woman_company: company?.preferredPolicyTypes?.includes('여성') ? 1 : 0,
+          is_disabled_company: company?.preferredPolicyTypes?.includes('장애') ? 1 : 0,
           license_codes: '',
-          license_names: '',
-          is_verified: 0,
-          verification_status: 'NONE',
+          license_names: company?.licenseSummary || '',
+          is_verified: company?.businessVerified ? 1 : 0,
+          verification_status: business_verification_status || 'NONE',
+          business_license_file_name: company?.businessLicenseFileName || '',
           created_at: new Date().toISOString(),
           status: 'active',
           performances: []
@@ -614,16 +719,21 @@ const mockAdapter = async (config) => {
           company_name: companyData.company_name,
           business_registration_no: companyData.business_registration_no,
           business_type: companyData.business_type,
+          industry: companyData.industry,
+          address: companyData.address,
+          detail_address: companyData.detail_address,
+          ceo_name: companyData.ceo_name,
+          representative_phone: companyData.representative_phone,
+          company_phone: companyData.phone,
+          is_small_business: companyData.is_small_business === '있음' ? 1 : 0,
           is_youth_company: companyData.is_youth_company,
           is_woman_company: companyData.is_woman_company,
           is_disabled_company: companyData.is_disabled_company,
           license_codes: licCodes,
           license_names: licNames,
+          business_license_file_name: companyData.business_license_file_name,
           performances: companyData.performances || users[idx].performances || []
         };
-        if (users[idx].is_verified) {
-          users[idx].role = 'COMPANY';
-        }
         setMockData('mock_users', users);
         responseData = { success: true, message: '기업 정보가 성공적으로 반영되었습니다.', user: users[idx] };
       }
@@ -636,10 +746,9 @@ const mockAdapter = async (config) => {
       const idx = users.findIndex(u => u.id === loggedInUser.id);
       if (idx !== -1) {
         users[idx].is_verified = 1;
-        users[idx].role = 'COMPANY';
         setMockData('mock_users', users);
       }
-      responseData = { success: true, message: '사업자등록번호 유효성 검증 완료 및 기업회원으로 자동 등급 전환되었습니다.' };
+      responseData = { success: true, message: '사업자등록번호 유효성 검증이 완료되었습니다. 기업회원 승격은 관리자 검수 후 처리됩니다.' };
     }
     else if (isMatch('/auth/upload-verification-doc') && method === 'post') {
       const users = getMockData('mock_users');
@@ -938,13 +1047,22 @@ const mockAdapter = async (config) => {
       responseData = { success: false, message: `목업 경로가 구현되지 않았습니다: ${method.toUpperCase()} ${url}` };
     }
 
-    return Promise.resolve({
+    const response = {
       data: responseData,
       status,
       statusText: status === 200 ? 'OK' : 'Error',
       headers: { 'content-type': 'application/json' },
       config,
-    });
+    };
+    const validateStatus = config.validateStatus || ((responseStatus) => responseStatus >= 200 && responseStatus < 300);
+    if (!validateStatus(status)) {
+      const error = new Error(responseData?.message || '요청 처리에 실패했습니다.');
+      error.config = config;
+      error.response = response;
+      return Promise.reject(error);
+    }
+
+    return Promise.resolve(response);
   } catch (err) {
     return Promise.reject(err);
   }
@@ -979,7 +1097,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+      if (window.location.pathname !== '/login' && !window.location.pathname.startsWith('/signup')) {
         alert('세션이 만료되었습니다. 다시 로그인해주세요.');
         window.location.href = '/login';
       }
