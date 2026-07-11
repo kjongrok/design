@@ -9,6 +9,11 @@ const seedInquiries = [
   { id: 'Q-2026-0707', category: '기업 인증', title: '기업 증빙 서류 검토 기간을 확인하고 싶습니다.', content: '사업자등록증을 제출했습니다. 승인까지 얼마나 걸리는지 확인 부탁드립니다.', status: 'WAITING', createdAt: '2026.07.07 11:05', answer: '', answeredAt: '' },
   { id: 'Q-2026-0628', category: '공고 정보', title: '관심 공고의 마감 일정이 변경되었습니다.', content: '나라장터와 서비스에 표시된 마감 일정이 다른 것 같습니다.', status: 'ANSWERED', createdAt: '2026.06.28 09:18', answer: '공고 변경사항이 다음 수집 주기에 반영되었습니다. 현재는 변경된 일정으로 확인할 수 있습니다.', answeredAt: '2026.06.28 10:42' }
 ];
+const seedNotices = [
+  { id: 1, important: true, title: 'BidMatch 서비스 이용 안내', date: '2026.07.11', content: 'BidMatch의 맞춤 공고와 알림 서비스를 이용해 주셔서 감사합니다.' },
+  { id: 2, important: false, title: '맞춤 공고 조건 설정 방법 안내', date: '2026.07.08', content: '관심 조건은 여러 개 저장할 수 있으며, 사용 중인 조건 하나를 기준으로 공고가 매칭됩니다.' },
+  { id: 3, important: false, title: '기업회원 인증 정보 입력 안내', date: '2026.07.03', content: '담당자 이름과 사업자등록증의 대표자명은 서로 다른 항목으로 입력해 주세요.' },
+];
 
 const quickQuestions = [
   '입찰서 작성 지원 서비스는 어디에 있나요?',
@@ -31,6 +36,8 @@ function SupportCenter() {
   const [answer, setAnswer] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState([{ from: 'bot', text: '안녕하세요! BidMatch 고객센터입니다. 서비스 이용 중 궁금한 점을 물어보세요.' }]);
+  const [activeTab, setActiveTab] = useState('notice');
+  const [selectedNotice, setSelectedNotice] = useState(seedNotices[0]);
 
   const selected = inquiries.find(item => item.id === selectedId);
   const filtered = useMemo(() => inquiries.filter(item => item.title.includes(search) || item.category.includes(search)), [inquiries, search]);
@@ -67,10 +74,14 @@ function SupportCenter() {
       <div className="dashboard-container">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px' }}>
           <div><h1 className="welcome-title">고객센터</h1><p className="welcome-subtitle">궁금한 내용을 빠르게 확인하고 담당자에게 1:1 문의할 수 있습니다.</p></div>
-          <button onClick={() => setWriteOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 20px', borderRadius: 8, background: '#2563eb', color: '#fff', fontWeight: 700 }}><Plus size={18} /> 문의 작성</button>
+          {activeTab === 'inquiry' && <button onClick={() => setWriteOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 20px', borderRadius: 8, background: '#2563eb', color: '#fff', fontWeight: 700 }}><Plus size={18} /> 문의 작성</button>}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.6fr) 320px', gap: 20, marginBottom: 24 }}>
+        <div style={{display:'flex',gap:4,borderBottom:'1px solid #cbd5e1',marginBottom:24}}>{[['notice','공지사항'],['inquiry','1:1 문의'],['helper','이용 도우미']].map(([key,label])=><button key={key} onClick={()=>setActiveTab(key)} style={{padding:'13px 22px',fontWeight:800,color:activeTab===key?'#2563eb':'#64748b',borderBottom:activeTab===key?'3px solid #2563eb':'3px solid transparent'}}>{label}</button>)}</div>
+
+        {activeTab === 'notice' && <section style={{...card,overflow:'hidden',display:'grid',gridTemplateColumns:'42% 58%',minHeight:390}}><div style={{borderRight:'1px solid #e2e8f0'}}>{seedNotices.map(item=><button key={item.id} onClick={()=>setSelectedNotice(item)} style={{width:'100%',padding:'20px',textAlign:'left',borderBottom:'1px solid #e2e8f0',background:selectedNotice.id===item.id?'#eff6ff':'#fff'}}><div style={{fontSize:12,color:'#64748b',marginBottom:7}}>{item.important&&<span style={{color:'#dc2626',fontWeight:800,marginRight:7}}>중요</span>}{item.date}</div><strong>{item.title}</strong></button>)}</div><div style={{padding:30}}><div style={{fontSize:13,color:'#64748b',marginBottom:10}}>{selectedNotice.date}</div><h2 style={{fontSize:21,marginBottom:20}}>{selectedNotice.title}</h2><p style={{lineHeight:1.8,color:'#475569'}}>{selectedNotice.content}</p>{isAdmin&&<div style={{display:'flex',gap:8,marginTop:28}}><button style={{padding:'9px 15px',border:'1px solid #cbd5e1',borderRadius:7,fontWeight:700}}>공지 수정</button><button style={{padding:'9px 15px',background:'#2563eb',color:'#fff',borderRadius:7,fontWeight:700}}>새 공지 등록</button></div>}</div></section>}
+
+        <div style={{ display: activeTab === 'helper' ? 'grid' : 'none', gridTemplateColumns: 'minmax(0,1.6fr) 320px', gap: 20, marginBottom: 24 }}>
           <section style={{ ...card, overflow: 'hidden' }}>
             <div style={{ padding: '17px 22px', borderBottom: '1px solid #e2e8f0', display: 'flex', gap: 12, alignItems: 'center' }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: '#eff6ff', color: '#2563eb', display: 'grid', placeItems: 'center' }}><Bot size={23} /></div>
@@ -101,7 +112,7 @@ function SupportCenter() {
           </div>
         </div>
 
-        <section style={{ ...card, overflow: 'hidden' }}>
+        <section style={{ ...card, overflow: 'hidden', display: activeTab === 'inquiry' ? 'block' : 'none' }}>
           <div style={{ padding: '18px 22px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div><h2 style={{ fontSize: 17 }}>{isAdmin ? '고객 문의 관리' : '나의 문의 내역'}</h2><p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{isAdmin ? '접수된 문의를 확인하고 답변을 등록합니다.' : '문의 내용과 담당자의 답변 결과를 확인합니다.'}</p></div>
             <div style={{ position: 'relative' }}><Search size={16} style={{ position: 'absolute', left: 12, top: 12, color: '#94a3b8' }} /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="문의 검색" style={{ ...field, width: 220, height: 40, paddingLeft: 36 }} /></div>

@@ -93,6 +93,15 @@ function InterestConditions() {
     }
   };
 
+  const handleActivate = async (id, active) => {
+    try {
+      const res = await api.put(`/match-rules/${id}/activate`, { active });
+      if (res.data.success) setRules(res.data.items);
+    } catch (err) {
+      alert('매칭 조건 변경에 실패했습니다.');
+    }
+  };
+
   return (
     <Layout>
       <div className="dashboard-container">
@@ -107,7 +116,7 @@ function InterestConditions() {
               <div style={{ padding: '24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <h2 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>저장된 관심 조건</h2>
-                  <p style={{ fontSize: '13px', color: '#64748b' }}>설정된 조건에 맞춰 실시간 입찰 정보를 안내합니다.</p>
+                  <p style={{ fontSize: '13px', color: '#64748b' }}>여러 조건을 저장하고, 실제 매칭에 사용할 조건 하나를 선택하세요.</p>
                 </div>
               </div>
 
@@ -117,20 +126,22 @@ function InterestConditions() {
                     등록된 조건이 없습니다. 우측에서 새로운 조건을 추가해보세요.
                   </div>
                 ) : (
-                  rules.map((rule, idx) => (
-                    <div key={rule.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', border: idx === 0 ? '1px solid #3b82f6' : '1px solid #e2e8f0', borderRadius: '8px', backgroundColor: idx === 0 ? '#eff6ff' : '#f8fafc' }}>
+                  rules.map((rule) => (
+                    <div key={rule.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', border: rule.is_active ? '2px solid #3b82f6' : '1px solid #e2e8f0', borderRadius: '8px', backgroundColor: rule.is_active ? '#eff6ff' : '#f8fafc' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: idx === 0 ? '#60a5fa' : '#e2e8f0', color: idx === 0 ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: rule.is_active ? '#60a5fa' : '#e2e8f0', color: rule.is_active ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <Settings size={20} />
                         </div>
                         <div>
-                          <div style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>{rule.rule_name}</div>
+                          <div style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>{rule.rule_name} {rule.is_active && <span style={{marginLeft:7,padding:'3px 8px',borderRadius:12,background:'#2563eb',color:'#fff',fontSize:11}}>사용 중</span>}</div>
                           <div style={{ fontSize: '13px', color: '#475569' }}>
                             {rule.include_keywords} | {rule.region} | {rule.biz_types}
                           </div>
                         </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        {!rule.is_active && <button onClick={() => handleActivate(rule.id, true)} style={{padding:'7px 11px',border:'1px solid #93c5fd',borderRadius:7,color:'#1d4ed8',background:'#fff',fontSize:12,fontWeight:700}}>조건 사용</button>}
+                        {rule.is_active && <button onClick={() => handleActivate(rule.id, false)} style={{padding:'7px 11px',border:'1px solid #fca5a5',borderRadius:7,color:'#b91c1c',background:'#fff',fontSize:12,fontWeight:700}}>사용 취소</button>}
                         <Trash2 size={20} color="#64748b" style={{ cursor: 'pointer' }} onClick={() => handleDelete(rule.id)} />
                       </div>
                     </div>

@@ -147,7 +147,7 @@ function Notifications() {
                 <tr>
                   <th style={{ width: '12%', minWidth: '100px' }}>알림 일시</th>
                   <th style={{ width: '10%', minWidth: '80px' }}>상태</th>
-                  <th style={{ width: '15%', minWidth: '120px' }}>알림 유형</th>
+                  <th style={{ width: '15%', minWidth: '120px' }}>알림 유형·중요도</th>
                   <th style={{ width: '52%', minWidth: '350px' }}>상세 내용</th>
                   <th style={{ width: '11%', textAlign: 'right', minWidth: '100px' }}>상세 보기</th>
                 </tr>
@@ -170,15 +170,15 @@ function Notifications() {
                         </div>
                       </td>
                       <td style={{ fontWeight: 600, color: '#334155' }}>
-                        {n.title}
+                        <div>{n.title}</div><div style={{marginTop:5,display:'flex',gap:5}}><span style={{fontSize:10,padding:'2px 6px',borderRadius:8,background:n.priority==='HIGH'?'#fee2e2':'#e2e8f0',color:n.priority==='HIGH'?'#b91c1c':'#475569'}}>{n.priority==='HIGH'?'중요':'일반'}</span><span style={{fontSize:10,color:n.email_sent?'#166534':'#94a3b8'}}>{n.email_sent?'이메일 발송':'앱 알림'}</span></div>
                       </td>
                       <td style={{ color: '#475569' }}>
                         {n.message}
                       </td>
                       <td style={{ textAlign: 'right' }}>
-                        {n.bid_notice_id && (
-                          <button onClick={() => navigate('/notice/' + n.bid_notice_id)} style={{ backgroundColor: 'transparent', color: '#3b82f6', border: 'none', fontSize: '14px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                            공고 보기 <ChevronRight size={16} />
+                        {n.target_path && (
+                          <button onClick={() => navigate(n.target_path)} style={{ backgroundColor: 'transparent', color: '#3b82f6', border: 'none', fontSize: '14px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                            바로가기 <ChevronRight size={16} />
                           </button>
                         )}
                       </td>

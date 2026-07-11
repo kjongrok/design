@@ -98,6 +98,13 @@ const seedMockDatabase = () => {
         changed = true;
       }
     });
+    const defaultCompany = savedUsers.find(user => user.email === 'user@bidmatch.com');
+    if (defaultCompany && (defaultCompany.role !== 'COMPANY' || defaultCompany.verification_status !== 'APPROVED')) {
+      defaultCompany.role = 'COMPANY';
+      defaultCompany.is_verified = 1;
+      defaultCompany.verification_status = 'APPROVED';
+      changed = true;
+    }
     if (changed) {
       localStorage.setItem('mock_users', JSON.stringify(savedUsers));
     }
@@ -108,7 +115,7 @@ const seedMockDatabase = () => {
     id: 2,
     email: 'user@bidmatch.com',
     name: '김종록 대표',
-    role: 'USER', // 'USER'(일반) -> 기업 등록/인증 후 'COMPANY'로 전환
+    role: 'COMPANY',
     phone: '010-1234-5678',
     company_name: '(주)비드매치',
     business_registration_no: '123-45-67890',
@@ -118,8 +125,8 @@ const seedMockDatabase = () => {
     is_disabled_company: 0,
     license_codes: '1468', // 소프트웨어사업자(컴퓨터관련서비스업)
     license_names: '소프트웨어사업자(컴퓨터관련서비스업)',
-    is_verified: 0,
-    verification_status: 'NONE', // NONE, PENDING, APPROVED, REJECTED
+    is_verified: 1,
+    verification_status: 'APPROVED', // NONE, PENDING, APPROVED, REJECTED
     created_at: '2026-07-01T09:00:00Z',
     status: 'active',
     performances: [
@@ -191,6 +198,7 @@ const seedMockDatabase = () => {
   const defaultRules = [
     {
       id: 1,
+      is_active: true,
       keyword_include: '유지관리,구축,시스템,AI,클라우드',
       keyword_exclude: '폐기물,건설,청소',
       regions: '서울,경기,인천,전국',
@@ -622,7 +630,7 @@ const mockAdapter = async (config) => {
   try {
     // A. 인증 및 내 정보 API (/auth/*)
     if (isMatch('/auth/login') && method === 'post') {
-      const { email } = JSON.parse(config.data || '{}');
+      const { email, password } = JSON.parse(config.data || '{}');
       const users = getMockData('mock_users');
       const user = users.find(u => u.email === email);
       if (user?.status === 'blocked') {
@@ -630,16 +638,20 @@ const mockAdapter = async (config) => {
         responseData = {
           success: false,
           account_status: 'blocked',
-          message: '현재 계정은 정지 상태로 로그인이 제한되었습니다. 고객센터로 문의해 주세요.',
+          reason: user.status_reason || '기업 인증자료 불일치',
+          restricted_at: user.restricted_at || '2026-07-08',
+          message: `계정이 정지되었습니다. 사유: ${user.status_reason || '기업 인증자료 불일치'}`,
         };
       } else if (user?.status === 'dormant') {
         status = 403;
         responseData = {
           success: false,
           account_status: 'dormant',
-          message: '현재 계정은 휴면 상태로 로그인이 제한되었습니다. 휴면 해제 문의를 접수해 주세요.',
+          reason: user.status_reason || '장기간 미사용',
+          restricted_at: user.restricted_at || '2026-07-01',
+          message: `계정이 휴면 처리되었습니다. 사유: ${user.status_reason || '장기간 미사용'}`,
         };
-      } else if (user) {
+      } else if (user && (!user.password || user.password === password)) {
         responseData = { success: true, token: `${email}_token`, user };
       } else {
         status = 400;
@@ -656,6 +668,7 @@ const mockAdapter = async (config) => {
         const newUser = {
           id: Date.now(),
           email,
+          password: JSON.parse(config.data || '{}').password,
           name,
           role: 'USER',
           phone: '',
@@ -686,7 +699,43 @@ const mockAdapter = async (config) => {
       }
     }
     else if (isMatch('/auth/reset-password-request') && method === 'post') {
-      responseData = { success: true, message: '비밀번호 재설정 이메일이 발송되었습니다.' };
+      const { email } = JSON.parse(config.data || '{}');
+      const user = getMockData('mock_users').find(u => u.email === email);
+      if (!user) {
+        status = 404;
+        responseData = { success: false, message: '가입된 이메일을 찾을 수 없습니다.' };
+      } else {
+        const verificationCode = '482913';
+        localStorage.setItem('mock_reset_request', JSON.stringify({ email, verificationCode }));
+        responseData = { success: true, verification_code: verificationCode, message: '인증번호를 발송했습니다.' };
+      }
+    }
+    else if (isMatch('/auth/reset-password-verify') && method === 'post') {
+      const { email, verification_code } = JSON.parse(config.data || '{}');
+      const request = JSON.parse(localStorage.getItem('mock_reset_request') || '{}');
+      if (request.email !== email || request.verificationCode !== verification_code) {
+        status = 400;
+        responseData = { success: false, message: '인증번호가 올바르지 않습니다.' };
+      } else {
+        const temporaryPassword = 'BidMatch!26';
+        const users = getMockData('mock_users');
+        const idx = users.findIndex(u => u.email === email);
+        users[idx].password = temporaryPassword;
+        users[idx].must_change_password = true;
+        setMockData('mock_users', users);
+        responseData = { success: true, temporary_password: temporaryPassword };
+      }
+    }
+    else if (isMatch('/auth/find-company-email') && method === 'post') {
+      const { name, business_registration_no } = JSON.parse(config.data || '{}');
+      const user = getMockData('mock_users').find(u => u.name === name && u.business_registration_no === business_registration_no && u.company_name);
+      if (!user) {
+        status = 404;
+        responseData = { success: false, message: '일치하는 기업회원 정보를 찾을 수 없습니다.' };
+      } else {
+        const [id, domain] = user.email.split('@');
+        responseData = { success: true, email: `${id.slice(0, 2)}${'*'.repeat(Math.max(3, id.length - 2))}@${domain}` };
+      }
     }
     else if (isMatch('/auth/me') && method === 'get') {
       if (loggedInUser) {
@@ -818,7 +867,8 @@ const mockAdapter = async (config) => {
     else if (isMatch('/bid-notices/interest') && method === 'get') {
       const notices = getMockData('mock_notices') || [];
       const interestNotices = notices.filter(n => n.is_interest);
-      responseData = { success: true, items: interestNotices };
+      const specs = (getMockData('mock_specifications') || []).filter(s => s.is_interest).map(s => ({ ...s, item_type: 'SPECIFICATION' }));
+      responseData = { success: true, items: [...interestNotices.map(n => ({ ...n, item_type: 'NOTICE' })), ...specs] };
     }
     else if (isMatch('/bid-notices/:id') && method === 'get') {
       const id = getUrlParam('/bid-notices/:id');
@@ -852,6 +902,23 @@ const mockAdapter = async (config) => {
       }
       responseData = { success: true, items: specs };
     }
+    else if (isMatch('/specifications/:id/interest') && method === 'post') {
+      const id = Number(getUrlParam('/specifications/:id/interest'));
+      const specs = getMockData('mock_specifications') || [];
+      const idx = specs.findIndex(s => s.id === id);
+      if (idx === -1) { status = 404; responseData = { success: false, message: '사전규격을 찾을 수 없습니다.' }; }
+      else {
+        specs[idx].is_interest = !specs[idx].is_interest;
+        setMockData('mock_specifications', specs);
+        responseData = { success: true, is_interest: specs[idx].is_interest };
+      }
+    }
+    else if (isMatch('/specifications/:id') && method === 'get') {
+      const id = Number(getUrlParam('/specifications/:id'));
+      const spec = (getMockData('mock_specifications') || []).find(s => s.id === id);
+      if (!spec) { status = 404; responseData = { success: false, message: '사전규격을 찾을 수 없습니다.' }; }
+      else responseData = { success: true, item: { ...spec, status: spec.converted_notice_id ? '정식 공고 전환' : '의견등록 가능', detail_url: spec.detail_url || 'https://www.g2b.go.kr', qualification: spec.qualification || '공고 내용과 관련된 업종 및 면허를 보유한 기업', attachments: spec.attachments || ['사전규격서.pdf', '과업내용서.hwp'] } };
+    }
 
     // D. 신규 추가 메뉴: 개찰결과 (/bid-results)
     else if (isMatch('/bid-results') && method === 'get') {
@@ -860,7 +927,31 @@ const mockAdapter = async (config) => {
       if (params.query) {
         results = results.filter(r => r.title.includes(params.query) || r.winner_name.includes(params.query));
       }
+      results = results.map((r, index) => ({
+        ...r,
+        base_amount: r.base_amount || Math.round(r.estimated_price * 1.004),
+        participant_count: r.participant_count || [12, 7, 18, 9, 14][index % 5],
+        my_bid_amount: r.my_bid_amount || (index < 3 ? r.winning_amount + [12400000, 38500000, 9200000][index] : null),
+        my_rank: r.my_rank || (index < 3 ? [4, 3, 6][index] : null),
+        result_status: r.result_status || '낙찰 완료',
+      }));
       responseData = { success: true, items: results };
+    }
+    else if (isMatch('/bid-results/:id') && method === 'get') {
+      const id = Number(getUrlParam('/bid-results/:id'));
+      const r = (getMockData('mock_bid_results') || []).find(item => item.id === id);
+      if (!r) { status = 404; responseData = { success: false, message: '개찰결과를 찾을 수 없습니다.' }; }
+      else {
+        const idx = Math.max(0, id - 1);
+        const baseAmount = r.base_amount || Math.round(r.estimated_price * 1.004);
+        const myBid = idx < 3 ? r.winning_amount + [12400000, 38500000, 9200000][idx] : null;
+        const participants = [12, 7, 18, 9, 14][idx % 5];
+        responseData = { success: true, item: { ...r, base_amount: baseAmount, participant_count: participants, my_bid_amount: myBid, my_rank: idx < 3 ? [4,3,6][idx] : null, result_status: '낙찰 완료', bidders: [
+          { rank: 1, name: r.winner_name, amount: r.winning_amount, rate: r.success_rate, status: '최종 낙찰' },
+          { rank: 2, name: '(주)한빛정보기술', amount: r.winning_amount + 4200000, rate: +(r.success_rate + .44).toFixed(2), status: '적격' },
+          { rank: idx < 3 ? [4,3,6][idx] : 3, name: '(주)비드매치', amount: myBid, rate: myBid ? +(myBid / r.estimated_price * 100).toFixed(2) : null, status: myBid ? '자사' : '미참여' },
+        ] } };
+      }
     }
 
     // E. 신규 추가 메뉴: 제안서 도우미 (/proposal/*)
@@ -895,11 +986,19 @@ const mockAdapter = async (config) => {
       const rules = getMockData('mock_rules');
       const newRule = {
         id: Date.now(),
+        is_active: rules.length === 0,
         ...payload
       };
       rules.push(newRule);
       setMockData('mock_rules', rules);
       responseData = { success: true, message: '관심 조건이 등록되었습니다.' };
+    }
+    else if (isMatch('/match-rules/:id/activate') && method === 'put') {
+      const id = Number(getUrlParam('/match-rules/:id/activate'));
+      const { active = true } = JSON.parse(config.data || '{}');
+      const rules = getMockData('mock_rules').map(rule => ({ ...rule, is_active: active ? rule.id === id : (rule.id === id ? false : rule.is_active) }));
+      setMockData('mock_rules', rules);
+      responseData = { success: true, items: rules, message: active ? '조건 사용을 시작했습니다.' : '조건 사용을 취소했습니다.' };
     }
     else if (isMatch('/match-rules/:id') && method === 'delete') {
       const id = getUrlParam('/match-rules/:id');
@@ -910,7 +1009,13 @@ const mockAdapter = async (config) => {
 
     // G. 알림 관련 API (/notifications/*)
     else if (isMatch('/notifications') && method === 'get') {
-      const notis = getMockData('mock_notifications');
+      const baseNotis = getMockData('mock_notifications');
+      const extras = [
+        { id: 101, title: '사전규격 정식 공고 전환', message: '관심 사전규격의 정식 입찰공고가 게시되었습니다.', type: 'SPEC_CONVERTED', priority: 'HIGH', target_path: '/specifications', email_sent: true, is_read: false, created_at: '2026-07-10T02:20:00Z' },
+        { id: 102, title: '개찰결과 등록', message: '참여한 공고의 개찰결과가 등록되었습니다. 자사 순위와 낙찰금액을 확인하세요.', type: 'BID_RESULT', priority: 'NORMAL', target_path: '/results', email_sent: false, is_read: false, created_at: '2026-07-09T07:10:00Z' },
+        { id: 103, title: '제안 준비 내부 마감 임박', message: '제안서 내부 검토 마감까지 1일 남았습니다.', type: 'PROPOSAL_DEADLINE', priority: 'HIGH', target_path: '/proposal', email_sent: true, is_read: true, created_at: '2026-07-08T05:00:00Z' },
+      ];
+      const notis = [...baseNotis.map(n => ({ ...n, type: n.type || 'MATCH', priority: n.priority || 'NORMAL', target_path: n.target_path || (n.bid_notice_id ? `/notice/${n.bid_notice_id}` : null), email_sent: n.email_sent ?? true })), ...extras];
       const unreadCount = notis.filter(n => !n.is_read).length;
       responseData = { success: true, items: notis, unreadCount };
     }

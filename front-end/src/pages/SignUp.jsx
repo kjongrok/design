@@ -310,9 +310,7 @@ function SignUp({ signupType = 'PERSONAL' }) {
             )}
 
             <div style={{ display: 'grid', gridTemplateColumns: signupType === 'COMPANY' ? '1fr 1fr' : '1fr', gap: '16px' }}>
-              {signupType === 'PERSONAL' && (
-                <TextField label="이름" required value={name} onChange={e => setName(e.target.value)} placeholder="이름을 입력하세요" icon={<User />} />
-              )}
+              <TextField label={signupType === 'COMPANY' ? '담당자 이름' : '이름'} required value={name} onChange={e => setName(e.target.value)} placeholder={signupType === 'COMPANY' ? '서비스를 이용할 담당자 이름' : '이름을 입력하세요'} icon={<User />} help={signupType === 'COMPANY' ? '사업자등록증의 대표자명과 별도로, 실제 서비스를 이용할 담당자 이름입니다.' : undefined} />
               <div>
                 <label style={labelStyle}>이메일 인증 <Required /></label>
                 <div style={{ display: 'flex', gap: '8px' }}>
@@ -396,7 +394,7 @@ function SignUp({ signupType = 'PERSONAL' }) {
                         </button>
                       </div>
                     </div>
-                    <TextField label="대표자" optional value={companyForm.ceoName} onChange={e => updateCompany('ceoName', e.target.value)} placeholder="대표자명" />
+                    <TextField label="대표자명" optional value={companyForm.ceoName} onChange={e => updateCompany('ceoName', e.target.value)} placeholder="사업자등록증에 기재된 대표자명" help="사업자등록증에 등록된 대표자 이름을 입력합니다." />
                     <TextField label="대표번호" optional value={companyForm.representativePhone} onChange={e => updateCompany('representativePhone', e.target.value)} placeholder="대표번호" />
                     <TextField label="전화번호" optional value={companyForm.phone} onChange={e => updateCompany('phone', e.target.value)} placeholder="담당자 연락처" />
                   </div>

@@ -15,6 +15,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [restrictedType, setRestrictedType] = useState('');
+  const [restrictionDetails, setRestrictionDetails] = useState(null);
 
   const openSupport = (type = '') => {
     const params = new URLSearchParams();
@@ -28,6 +29,7 @@ function Login() {
     const accountStatus = data.account_status;
 
     setError(message);
+    setRestrictionDetails(status === 403 ? { reason: data.reason, date: data.restricted_at } : null);
     if (status === 403) {
       if (accountStatus === 'dormant' || message.includes('휴면')) {
         setRestrictedType('dormant');
@@ -105,6 +107,10 @@ function Login() {
                 <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '1px' }} />
                 <span>{error}</span>
               </div>
+              {restrictionDetails && <div style={{ padding: '10px 12px', borderRadius: 7, background: 'rgba(255,255,255,.55)', fontSize: 13, lineHeight: 1.55 }}>
+                <div><strong>처리 사유:</strong> {restrictionDetails.reason}</div>
+                <div><strong>처리 일자:</strong> {restrictionDetails.date}</div>
+              </div>}
               {restrictedType && (
                 <button
                   type="button"
@@ -180,6 +186,7 @@ function Login() {
               회원가입 신청
             </button>
           </div>
+          <button type="button" onClick={() => navigate('/find-company-email')} style={{ margin: '16px auto 0', background: 'none', border: 'none', color: '#2563eb', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>기업회원 이메일을 잊으셨나요?</button>
         </div>
       </div>
     </div>

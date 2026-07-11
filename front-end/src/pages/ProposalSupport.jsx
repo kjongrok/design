@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
 import { Sparkles, FileText, CheckSquare, MessageSquare, Download, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react';
 import api from '../utils/api';
+import { useLocation } from 'react-router-dom';
 
 function ProposalSupport() {
+  const location = useLocation();
   const [notices, setNotices] = useState([]);
   const [selectedNoticeId, setSelectedNoticeId] = useState('');
   const [loading, setLoading] = useState(false);
   const [guideData, setGuideData] = useState(null);
+  const [stage, setStage] = useState('검토 중');
 
   useEffect(() => {
     // 공고 목록 가져오기
@@ -15,6 +18,7 @@ function ProposalSupport() {
       .then(res => {
         if (res.data.success) {
           setNotices(res.data.items || []);
+          if (location.state?.noticeId) setSelectedNoticeId(String(location.state.noticeId));
         }
       })
       .catch(err => console.error(err));
@@ -59,10 +63,10 @@ function ProposalSupport() {
         <div className="welcome-section" style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c026d3', marginBottom: '8px' }}>
             <Sparkles size={24} />
-            <span style={{ fontSize: '14px', fontWeight: 700 }}>AI 기반 입찰 서류 업무 자동화</span>
+            <span style={{ fontSize: '14px', fontWeight: 700 }}>공고·RFP 기반 입찰 준비 지원</span>
           </div>
           <h1 className="welcome-title">입찰제안서 작성 지원 도우미</h1>
-          <p className="welcome-subtitle">특정 나라장터 입찰 공고의 제안요청서(RFP)를 AI가 정밀 분석하여, 필수 제출 서류 체크리스트 및 맞춤 가이드북을 자동 생성합니다.</p>
+          <p className="welcome-subtitle">제안요청서(RFP)를 분석해 필수 제출서류와 작성 항목을 정리하고 준비 누락을 방지합니다.</p>
         </div>
 
         {/* Notice Selector Panel */}
@@ -108,7 +112,7 @@ function ProposalSupport() {
         )}
 
         {guideData && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
+          <><div className="panel" style={{padding:20,marginBottom:20}}><div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><strong>제안 준비 진행 현황</strong><div style={{fontSize:13,color:'#64748b',marginTop:5}}>완료 {guideData.checklist.filter(i=>i.checked).length} / {guideData.checklist.length}개 · 진행률 {Math.round(guideData.checklist.filter(i=>i.checked).length/guideData.checklist.length*100)}%</div></div><select value={stage} onChange={e=>setStage(e.target.value)} style={{height:40,border:'1px solid #cbd5e1',borderRadius:8,padding:'0 12px',fontWeight:700}}>{['검토 중','참여 결정','제안서 작성','내부 검토','제출 완료','결과 대기'].map(v=><option key={v}>{v}</option>)}</select></div><div style={{height:8,background:'#e2e8f0',borderRadius:8,marginTop:16,overflow:'hidden'}}><div style={{height:'100%',width:`${guideData.checklist.filter(i=>i.checked).length/guideData.checklist.length*100}%`,background:'#c026d3'}}/></div></div><div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
             
             {/* Checklist Column */}
             <div className="panel" style={{ padding: 0 }}>
@@ -184,7 +188,7 @@ function ProposalSupport() {
               </div>
 
             </div>
-          </div>
+          </div></>
         )}
 
       </div>

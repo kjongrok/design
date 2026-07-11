@@ -206,6 +206,9 @@ function CalendarPage() {
             {[...Array(daysInMonth)].map((_, i) => {
               const day = i + 1;
               const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+              const dayOfWeek = new Date(year, month, day).getDay();
+              const isSunday = dayOfWeek === 0;
+              const isSaturday = dayOfWeek === 6;
               
               const noticesOnThisDay = filteredNotices.filter(n => 
                 n.date && 
@@ -237,7 +240,7 @@ function CalendarPage() {
                     <span style={{ 
                       fontSize: '14px', 
                       fontWeight: isToday ? 700 : 500, 
-                      color: isToday ? '#0284c7' : '#334155',
+                      color: isToday ? '#0284c7' : isSunday ? '#ef4444' : isSaturday ? '#2563eb' : '#334155',
                       width: '24px', height: '24px', 
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       backgroundColor: isToday ? '#e0f2fe' : 'transparent',

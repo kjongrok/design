@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout/Layout';
-import { Heart, Search, Calendar, Landmark, Coins, Trash2, AlertCircle } from 'lucide-react';
+import { Heart, Trash2, FileText } from 'lucide-react';
 import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import Badge from '../components/UI/Badge';
@@ -9,6 +9,7 @@ function InterestNotices() {
   const navigate = useNavigate();
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState('ALL');
 
   const fetchInterestNotices = () => {
     setLoading(true);
@@ -29,10 +30,10 @@ function InterestNotices() {
     fetchInterestNotices();
   }, []);
 
-  const handleRemoveInterest = (e, id) => {
+  const handleRemoveInterest = (e, item) => {
     e.stopPropagation(); // 행 클릭 이벤트 전파 차단
     if (!window.confirm("선택하신 공고를 관심 공고함에서 삭제하시겠습니까?")) return;
-    api.post(`/bid-notices/${id}/interest`)
+    api.post(item.item_type === 'SPECIFICATION' ? `/specifications/${item.id}/interest` : `/bid-notices/${item.id}/interest`)
       .then(res => {
         if (res.data.success) {
           alert("관심 공고에서 제외되었습니다.");
@@ -41,6 +42,7 @@ function InterestNotices() {
       })
       .catch(err => console.error(err));
   };
+  const visibleItems = notices.filter(item => typeFilter === 'ALL' || item.item_type === typeFilter);
 
   return (
     <Layout>
@@ -52,8 +54,9 @@ function InterestNotices() {
             <span style={{ fontSize: '14px', fontWeight: 700 }}>스크랩 및 관심 정보 관리</span>
           </div>
           <h1 className="welcome-title">관심 공고함</h1>
-          <p className="welcome-subtitle">마음에 드는 입찰공고의 관심 등록(하트)을 클릭하여 한곳에 스크랩해 둔 목록입니다. 이곳에서 상세 요건을 비교하고 제안서를 준비하십시오.</p>
+          <p className="welcome-subtitle">관심 등록한 사전규격과 입찰공고를 한곳에서 확인하고 참여 준비로 연결합니다.</p>
         </div>
+        <div style={{display:'flex',gap:8,marginBottom:18}}>{[['ALL','전체'],['SPECIFICATION','사전규격'],['NOTICE','입찰공고']].map(([key,label])=><button key={key} onClick={()=>setTypeFilter(key)} style={{padding:'9px 16px',borderRadius:18,background:typeFilter===key?'#0f172a':'#fff',color:typeFilter===key?'#fff':'#475569',border:'1px solid #cbd5e1',fontWeight:700}}>{label}</button>)}</div>
 
         {/* Notices Table */}
         <div className="panel" style={{ padding: 0 }}>
@@ -83,19 +86,19 @@ function InterestNotices() {
                   </tr>
                 </thead>
                 <tbody>
-                  {notices.map(notice => (
+                  {visibleItems.map(notice => (
                     <tr 
                       key={notice.id} 
-                      onClick={() => navigate('/notice/' + notice.id)} 
+                      onClick={() => notice.item_type === 'SPECIFICATION' ? navigate(`/specifications/${notice.id}`) : navigate('/notice/' + notice.id)} 
                       style={{ cursor: 'pointer' }}
                       className="hoverable-row"
                     >
-                      <td style={{ color: '#64748b', fontSize: '13px' }}>{notice.notice_no}</td>
+                      <td style={{ color: '#64748b', fontSize: '13px' }}>{notice.notice_no || notice.spec_no}</td>
                       <td>
-                        <Badge variant="info" style={{ backgroundColor: '#eff6ff', color: '#2563eb' }}>{notice.biz_type}</Badge>
+                        <Badge variant="info" style={{ backgroundColor: notice.item_type === 'SPECIFICATION' ? '#f3e8ff' : '#eff6ff', color: notice.item_type === 'SPECIFICATION' ? '#7e22ce' : '#2563eb' }}>{notice.item_type === 'SPECIFICATION' ? '사전규격' : '입찰공고'}</Badge>
                       </td>
                       <td style={{ fontWeight: 700, color: '#0f172a' }}>{notice.title}</td>
-                      <td>{notice.demand_org_name || notice.notice_org_name}</td>
+                      <td>{notice.demand_org_name || notice.notice_org_name || notice.org_name}</td>
                       <td style={{ fontWeight: 600 }}>
                         {notice.estimated_price ? `₩ ${parseInt(notice.estimated_price).toLocaleString()}원` : '미정'}
                       </td>
@@ -104,12 +107,13 @@ function InterestNotices() {
                       </td>
                       <td style={{ textAlign: 'right' }}>
                         <button 
-                          onClick={(e) => handleRemoveInterest(e, notice.id)} 
+                          onClick={(e) => handleRemoveInterest(e, notice)} 
                           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
                           title="관심 해제"
                         >
                           <Trash2 size={18} color="#ef4444" />
                         </button>
+                        {notice.item_type === 'NOTICE' && <button onClick={e=>{e.stopPropagation();navigate('/proposal',{state:{noticeId:notice.id}})}} title="제안 준비 시작" style={{marginLeft:8,color:'#2563eb'}}><FileText size={18}/></button>}
                       </td>
                     </tr>
                   ))}
