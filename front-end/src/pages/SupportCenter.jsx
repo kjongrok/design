@@ -77,7 +77,7 @@ function SupportCenter() {
           {activeTab === 'inquiry' && <button onClick={() => setWriteOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 20px', borderRadius: 8, background: '#2563eb', color: '#fff', fontWeight: 700 }}><Plus size={18} /> 문의 작성</button>}
         </div>
 
-        <div style={{display:'flex',gap:4,borderBottom:'1px solid #cbd5e1',marginBottom:24}}>{[['notice','공지사항'],['inquiry','1:1 문의'],['helper','이용 도우미']].map(([key,label])=><button key={key} onClick={()=>setActiveTab(key)} style={{padding:'13px 22px',fontWeight:800,color:activeTab===key?'#2563eb':'#64748b',borderBottom:activeTab===key?'3px solid #2563eb':'3px solid transparent'}}>{label}</button>)}</div>
+        <div style={{display:'flex',gap:4,borderBottom:'1px solid #cbd5e1',marginBottom:24}}>{[['notice','공지사항'],['inquiry','1:1 문의'],['helper','AI 챗봇']].map(([key,label])=><button key={key} onClick={()=>setActiveTab(key)} style={{padding:'13px 22px',fontWeight:800,color:activeTab===key?'#2563eb':'#64748b',borderBottom:activeTab===key?'3px solid #2563eb':'3px solid transparent'}}>{label}</button>)}</div>
 
         {activeTab === 'notice' && <section style={{...card,overflow:'hidden',display:'grid',gridTemplateColumns:'42% 58%',minHeight:390}}><div style={{borderRight:'1px solid #e2e8f0'}}>{seedNotices.map(item=><button key={item.id} onClick={()=>setSelectedNotice(item)} style={{width:'100%',padding:'20px',textAlign:'left',borderBottom:'1px solid #e2e8f0',background:selectedNotice.id===item.id?'#eff6ff':'#fff'}}><div style={{fontSize:12,color:'#64748b',marginBottom:7}}>{item.important&&<span style={{color:'#dc2626',fontWeight:800,marginRight:7}}>중요</span>}{item.date}</div><strong>{item.title}</strong></button>)}</div><div style={{padding:30}}><div style={{fontSize:13,color:'#64748b',marginBottom:10}}>{selectedNotice.date}</div><h2 style={{fontSize:21,marginBottom:20}}>{selectedNotice.title}</h2><p style={{lineHeight:1.8,color:'#475569'}}>{selectedNotice.content}</p>{isAdmin&&<div style={{display:'flex',gap:8,marginTop:28}}><button style={{padding:'9px 15px',border:'1px solid #cbd5e1',borderRadius:7,fontWeight:700}}>공지 수정</button><button style={{padding:'9px 15px',background:'#2563eb',color:'#fff',borderRadius:7,fontWeight:700}}>새 공지 등록</button></div>}</div></section>}
 
@@ -85,7 +85,7 @@ function SupportCenter() {
           <section style={{ ...card, overflow: 'hidden' }}>
             <div style={{ padding: '17px 22px', borderBottom: '1px solid #e2e8f0', display: 'flex', gap: 12, alignItems: 'center' }}>
               <div style={{ width: 40, height: 40, borderRadius: 10, background: '#eff6ff', color: '#2563eb', display: 'grid', placeItems: 'center' }}><Bot size={23} /></div>
-              <div><strong>BidMatch 이용 도우미</strong><div style={{ fontSize: 12, color: '#16a34a', marginTop: 3 }}>● 상담 가능</div></div>
+              <div><strong>BidMatch AI 챗봇</strong><div style={{ fontSize: 12, color: '#16a34a', marginTop: 3 }}>● 상담 가능</div></div>
             </div>
             <div style={{ height: 230, overflowY: 'auto', padding: 20, background: '#f8fafc' }}>
               {messages.map((message, i) => <div key={i} style={{ display: 'flex', justifyContent: message.from === 'user' ? 'flex-end' : 'flex-start', marginBottom: 12 }}>

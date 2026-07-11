@@ -72,9 +72,9 @@ function Login() {
             </div>
 
             <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#94a3b8', marginBottom: '8px' }}>맞춤형 공고 매칭 서비스</h2>
-            <h1 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '60px', lineHeight: 1.4 }}>전략적 공고 대응을 위한 데이터 인사이트</h1>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '60px', lineHeight: 1.4, wordBreak: 'keep-all' }}>전략적 공고 대응을 위한 데이터 인사이트</h1>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', wordBreak: 'keep-all' }}>
               <div style={{ display: 'flex', gap: '16px' }}>
                 <CheckCircle2 size={24} color="#60a5fa" />
                 <div>
@@ -86,7 +86,14 @@ function Login() {
                 <CheckCircle2 size={24} color="#60a5fa" />
                 <div>
                   <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>통합 알림 시스템</div>
-                  <div style={{ fontSize: '14px', color: '#94a3b8' }}>카카오톡/이메일 즉시 알림 제공</div>
+                  <div style={{ fontSize: '14px', color: '#94a3b8' }}>이메일과 앱 알림으로 주요 일정 안내</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <CheckCircle2 size={24} color="#60a5fa" />
+                <div>
+                  <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>자가 자격진단</div>
+                  <div style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.5 }}>기업의 면허·지역·실적을 공고 조건과 비교해 참여 가능 여부 확인</div>
                 </div>
               </div>
             </div>

@@ -107,7 +107,7 @@ function LandingPage() {
                 <BellRing size={28} color="#8b5cf6" />
               </div>
               <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>실시간 알림</h3>
-              <p style={{ color: '#94a3b8', lineHeight: 1.6 }}>조건에 맞는 신규 공고가 등록되면 이메일과 카카오톡으로 즉시 알림을 발송하여 골든타임을 확보합니다.</p>
+              <p style={{ color: '#94a3b8', lineHeight: 1.6 }}>조건에 맞는 신규 공고가 등록되면 이메일과 앱 알림으로 주요 일정을 안내하여 골든타임을 확보합니다.</p>
             </div>
 
             <div style={{ backgroundColor: '#0f172a', padding: '40px', borderRadius: '16px', border: '1px solid #334155', transition: 'all 0.3s' }}>
